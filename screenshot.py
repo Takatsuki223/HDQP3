@@ -23,6 +23,23 @@ def save_data(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
+def load_reservoir_data():
+    """从JSON文件加载水库历史数据"""
+    try:
+        with open('reservoir_data.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        return []
+
+
+def save_reservoir_data(data):
+    """保存水库数据到JSON文件"""
+    with open('reservoir_data.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
 def generate_html_report(data):
     """生成HTML可视化报告"""
     html_content = f"""<!DOCTYPE html>
@@ -194,6 +211,7 @@ def generate_html_report(data):
 
     # 按时间排序数据
     sorted_data = sorted(data, key=lambda x: x['时间'])
+    print(sorted_data)
 
     # 获取最新数据的上游状态、所有站点状态
     if sorted_data:
@@ -665,6 +683,69 @@ def parse_water_level_data(html_content, publish_date):
     return results
 
 
+def parse_reservoir_data(html_content, publish_date):
+    """解析水库/船闸数据"""
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # 目标枢纽
+    target_reservoirs = ['大藤峡枢纽', '桂平船闸', '长洲船闸']
+    
+    # 查找所有表格
+    tables = soup.find_all('table')
+    
+    results = {}
+    
+    for table in tables:
+        rows = table.find_all('tr')
+        
+        # 寻找通航建筑物流量信息表
+        table_found = False
+        for row_index, row in enumerate(rows):
+            cells = row.find_all('td')
+            if len(cells) >= 1 and '通航建筑物流量信息表' in cells[0].get_text():
+                # 找到了正确的表格，从该行开始解析数据（跳过表头行）
+                table_found = True
+                # 从表头之后开始解析数据行
+                for data_row in rows[row_index + 1:]:  # 跳过表头和可能的第二行表头
+                    data_cells = data_row.find_all('td')
+                    if len(data_cells) >= 6:
+                        reservoir_name = data_cells[0].get_text(strip=True)
+                        
+                        # 检查是否为目标枢纽
+                        if reservoir_name in target_reservoirs:
+                            observation_time = data_cells[1].get_text(strip=True)
+                            upstream_level = data_cells[2].get_text(strip=True)
+                            downstream_level = data_cells[3].get_text(strip=True)
+                            inflow = data_cells[4].get_text(strip=True)
+                            outflow = data_cells[5].get_text(strip=True)
+                            
+                            # 计算是否放水：出库流量 >= 入库流量则为1，否则为0
+                            try:
+                                inflow_float = float(inflow)
+                                outflow_float = float(outflow)
+                                is_releasing = 1 if outflow_float >= inflow_float else 0
+                            except (ValueError, TypeError):
+                                is_releasing = 0
+                            
+                            # 组合完整日期时间
+                            full_datetime = f"{publish_date} {observation_time}"
+                            
+                            # 使用字典存储，站名为键，重复的会自动覆盖
+                            results[reservoir_name] = {
+                                '站名': reservoir_name,
+                                '时间': full_datetime,
+                                '上游水位': upstream_level,
+                                '入库流量': inflow,
+                                '出库流量': outflow,
+                                '是否放水': is_releasing
+                            }
+                break
+        if table_found:
+            break  # 找到表格后就停止搜索其他表格
+    
+    return results
+
+
 def main():
     with sync_playwright() as p:
         # 启动浏览器，headless=False 表示浏览器窗口可见
@@ -698,6 +779,9 @@ def main():
         
         # 使用字典存储所有数据，站名为键
         all_water_data = {}
+        
+        # 使用字典存储水库数据，枢纽名为键
+        all_reservoir_data = {}
         
         for i in range(num_links):
             # 重新获取列表（避免stale element）
@@ -738,6 +822,11 @@ def main():
             # 合并到总数据中，重复站点会自动覆盖
             all_water_data.update(water_data)
             
+            # 解析水库/船闸数据
+            reservoir_data = parse_reservoir_data(page_html, publish_date)
+            # 合并到水库数据中，重复枢纽会自动覆盖
+            all_reservoir_data.update(reservoir_data)
+            
             # 返回列表页
             print("返回列表页...")
             page.goto("https://www.gxghj.cn/c/fw/slcx")
@@ -761,6 +850,23 @@ def main():
             print(f"情况: {data['情况']}")
             print(f"颜色: {data['颜色']}")
             print(f"时间: {data['时间']}")
+            print("-" * 60)
+        
+        # 输出所有爬取的水库数据
+        print("\n\n")
+        print("=" * 60)
+        print("水库/船闸数据汇总")
+        print("=" * 60)
+        
+        for reservoir_name in sorted(all_reservoir_data.keys()):
+            data = all_reservoir_data[reservoir_name]
+            releasing_status = "放水中" if data['是否放水'] == 1 else "未放水"
+            print(f"站名: {data['站名']}")
+            print(f"时间: {data['时间']}")
+            print(f"上游水位: {data['上游水位']} 米")
+            print(f"入库流量: {data['入库流量']} m³/s")
+            print(f"出库流量: {data['出库流量']} m³/s")
+            print(f"是否放水: {data['是否放水']} ({releasing_status})")
             print("-" * 60)
         
         # 加载历史数据
@@ -828,6 +934,38 @@ def main():
         # 保存数据
         save_data(historical_data)
         print(f"数据已保存，当前共有 {len(historical_data)} 条记录")
+        
+        # 保存水库数据
+        if all_reservoir_data:
+            print("\n正在加载水库历史数据...")
+            reservoir_historical_data = load_reservoir_data()
+            
+            # 检查是否已存在相同时间的水库数据
+            new_reservoir_time = list(all_reservoir_data.values())[0]['时间'] if all_reservoir_data else None
+            existing_reservoir_index = -1
+            if new_reservoir_time:
+                for i, record in enumerate(reservoir_historical_data):
+                    if record['时间'] == new_reservoir_time:
+                        existing_reservoir_index = i
+                        break
+            
+            # 添加或更新水库数据
+            if new_reservoir_time:
+                reservoir_record_data = {
+                    '时间': new_reservoir_time,
+                    '枢纽数据': all_reservoir_data
+                }
+                
+                if existing_reservoir_index >= 0:
+                    print(f"更新时间 {new_reservoir_time} 的水库数据")
+                    reservoir_historical_data[existing_reservoir_index] = reservoir_record_data
+                else:
+                    print(f"添加新的水库时间数据: {new_reservoir_time}")
+                    reservoir_historical_data.append(reservoir_record_data)
+            
+            # 保存水库数据
+            save_reservoir_data(reservoir_historical_data)
+            print(f"水库数据已保存，当前共有 {len(reservoir_historical_data)} 条记录")
         
         # 生成HTML报告
         print("\n正在生成HTML可视化报告...")
