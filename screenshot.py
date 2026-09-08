@@ -23,23 +23,6 @@ def save_data(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def load_reservoir_data():
-    """从JSON文件加载水库历史数据"""
-    try:
-        with open('reservoir_data.json', 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
-    except json.JSONDecodeError:
-        return []
-
-
-def save_reservoir_data(data):
-    """保存水库数据到JSON文件"""
-    with open('reservoir_data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
 def generate_html_report(data):
     """生成HTML可视化报告"""
     html_content = f"""<!DOCTYPE html>
@@ -211,6 +194,7 @@ def generate_html_report(data):
 
     # 按时间排序数据
     sorted_data = sorted(data, key=lambda x: x['时间'])
+    # 测试输出
     print(sorted_data)
 
     # 获取最新数据的上游状态、所有站点状态
@@ -914,6 +898,7 @@ def main():
             record_data = {
                 '时间': new_data_time,
                 '站点数据': all_water_data,
+                '枢纽数据': all_reservoir_data,
                 '上游情况': {
                     '描述': upstream_status,
                     '颜色': upstream_color,
@@ -934,38 +919,6 @@ def main():
         # 保存数据
         save_data(historical_data)
         print(f"数据已保存，当前共有 {len(historical_data)} 条记录")
-        
-        # 保存水库数据
-        if all_reservoir_data:
-            print("\n正在加载水库历史数据...")
-            reservoir_historical_data = load_reservoir_data()
-            
-            # 检查是否已存在相同时间的水库数据
-            new_reservoir_time = list(all_reservoir_data.values())[0]['时间'] if all_reservoir_data else None
-            existing_reservoir_index = -1
-            if new_reservoir_time:
-                for i, record in enumerate(reservoir_historical_data):
-                    if record['时间'] == new_reservoir_time:
-                        existing_reservoir_index = i
-                        break
-            
-            # 添加或更新水库数据
-            if new_reservoir_time:
-                reservoir_record_data = {
-                    '时间': new_reservoir_time,
-                    '枢纽数据': all_reservoir_data
-                }
-                
-                if existing_reservoir_index >= 0:
-                    print(f"更新时间 {new_reservoir_time} 的水库数据")
-                    reservoir_historical_data[existing_reservoir_index] = reservoir_record_data
-                else:
-                    print(f"添加新的水库时间数据: {new_reservoir_time}")
-                    reservoir_historical_data.append(reservoir_record_data)
-            
-            # 保存水库数据
-            save_reservoir_data(reservoir_historical_data)
-            print(f"水库数据已保存，当前共有 {len(reservoir_historical_data)} 条记录")
         
         # 生成HTML报告
         print("\n正在生成HTML可视化报告...")
