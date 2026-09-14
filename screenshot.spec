@@ -21,7 +21,7 @@ a = Analysis(
     win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
-    distpath='西江水位查看分析器',  # 输出目录名称
+    distpath='XiJiang_Water_level',  # 输出目录名称
     workpath='build',    # 工作目录名称
 )
 
