@@ -438,6 +438,11 @@ def generate_html_report(data):
     if s3 != 0:
         station_warning += '水位快速上涨（日涨幅超2米）！'
 
+    #梧州是否需要水位过低警告
+    if float(latest_wuzhou_data) < 4:
+        latest_wuzhou_wSymbol = '⚠️'
+        station_warning += '梧州水位过低！'
+
     if station_warning != ' ':
         station_warning += '请及时注意水位变化，加强船舶调度！'
 
@@ -884,19 +889,22 @@ def main():
         
         # 等待页面加载完成
         print("等待页面加载...")
-        page.wait_for_load_state("networkidle")
+
+        time.sleep(5)
+
+        #page.wait_for_load_state("networkidle")
         
         # 截图保存列表页
         screenshot_path = "screenshot_list.png"
         page.screenshot(path=screenshot_path)
         print(f"列表页截图已保存到: {screenshot_path}")
         
-        # 获取前4条新闻链接
+        # 获取前5条新闻链接
         links = page.locator('.newsList li')
         link_count = links.count()
         
-        # 只处理前4条或实际存在的链接数
-        num_links = min(4, link_count)
+        # 只处理前5条或实际存在的链接数
+        num_links = min(5, link_count)
         
         # 使用字典存储所有数据，站名为键
         all_water_data = {}
@@ -920,7 +928,10 @@ def main():
             
             # 等待详情页加载完成
             print("等待详情页加载...")
-            page.wait_for_load_state("networkidle")
+
+            time.sleep(5)
+
+            #page.wait_for_load_state("networkidle")
             
             # 截图保存详情页
             screenshot_detail_path = f"screenshot_detail_{i+1}.png"
@@ -951,7 +962,10 @@ def main():
             # 返回列表页
             print("返回列表页...")
             page.goto("https://www.gxghj.cn/c/fw/slcx")
-            page.wait_for_load_state("networkidle")
+
+            time.sleep(5)
+
+            #page.wait_for_load_state("networkidle")
             
             time.sleep(1)
         
@@ -1063,7 +1077,7 @@ def main():
         print("报告已生成: water_level_report.html")
         
         # 等待几秒查看效果
-        time.sleep(3)
+        time.sleep(2)
         
         # 关闭浏览器
         browser.close()

@@ -6,7 +6,8 @@ import shutil
 block_cipher = None
 
 # 获取chromium路径并准备打包数据
-chromium_path = r'C:\Users\zwy\AppData\Local\ms-playwright\chromium-1234'
+chromium_path = r'C:\chromium-1234'
+# chromium_path = r'C:\Users\zwy\AppData\Local\ms-playwright\chromium-1234' 备用路径
 datas = [('river.jpg', '.')]
 
 # 如果chromium存在，添加到打包数据
