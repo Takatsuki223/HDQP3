@@ -1,3 +1,6 @@
+先将解压后文件夹中的“chromium-1234”这个文件夹移动到C盘！！！（保证路径为C:\chromium-1234，拖进C盘即可，不需要再任何文件夹内）
+再将解压后文件夹中的“西江水位查看分析”这个文件夹，移动到桌面！！！
+
 # 水文数据查询程序2（Hydrological data query program2）
 一个基于**Python + Playwright + BeautifulSoup + ECharts**的便携化河道水位数据爬取与可视化展示分析程序。  
 供**梧州仓码**同事使用，快速查询梧州航道水位信息，为船舶调度提供依据。
@@ -11,7 +14,7 @@
 **5.** 支持将.py文件打包为.exe程序，可以在其他电脑更方便的使用。
 
 ## 使用说明
-**下载后（或本地部署成果执行打包指令之后），仅在“西江水位查看分析器”文件夹内操作使用即可**  
+**下载后（或本地部署成果执行打包指令之后），仅在**“西江水位查看分析”**文件夹内操作使用即可**  
 **1.** 打开文件夹后（西江水位查看分析器文件夹），**双击运行“水位数据爬取.exe”文件。**  
 **2.** 会打开一个终端页面，**请耐心等待30秒左右**，然后程序会开始自动运行。    
 **3.** 程序开始自动运行后，**终端页面会输出水位信息以及运行情况**，可以通过终端判断是否运行正常。   
@@ -26,66 +29,24 @@
 - **为达到最佳展示效果，请将浏览器窗口扩展至全屏查看可视化报告。**
 - **数据缺失问题：数据源链接为https://www.gxghj.cn/c/fw/slcx   打开后看到的前4条链接中，只要缺少南宁、柳州、梧州的3个航道水情信息的任意一个链接，就会影响数据爬取，导致数据缺少。**
 
-## 联系方式
-
-### 如果您在使用时有问题或建议，欢迎联系我
-- **电子邮箱；liufuyu01@sinotrans.com**
-
-## 本地部署
-
-### 环境要求
-- **Python 3.14+**
-- **Playwright 1.40+**
-- **BeautiifulSoup 4.12+**
-- **pyinstaller 6.22.2（如有打包需求才需要配置）**
-
-### 部署操作
-
-**1. 克隆项目**
-```
-# 复制以下命令到终端执行
-git clone https://gitee.com/takatsuki225/hdqp2.git
-
-#进入目录
-cd/
-```
-
-**2. 安装依赖**
-```
-# 安装依赖
-pip install -r requirements.txt
-
-# 安装Playwright浏览器驱动
-playwright install chromium
-```
-**3. 启动程序**
-```
-# 运行脚本
-python screenshot.py
-```
-
-**4. 打包为程序**
-```
-#打包成exe程序
-python -m PyInstaller screenshot.spec
-```
 ## 项目架构
 
 ```
-psw3/
-├── screenshot.py              # 主程序脚本（爬取、解析、存储、生成报告）
-├── screenshot.spec            # PyInstaller 打包配置文件
-├── requirements.txt           # Python 依赖列表
-├── water_level_data.json      # 水位与枢纽历史数据（本地持久化存储）
-├── water_level_report.html    # 可视化分析报告（程序运行后生成）
-├── river.jpg                  # 流域示意图（报告内嵌图片）
+西江水位查看分析/
+├── 水位数据爬取.exe            # 主程序，勿动！（爬取、解析、存储、生成报告）
+├── water_level_data.json      # 水位与枢纽历史数据，勿动！（本地持久化存储）
+├── water_level_report.html    # 可视化分析报告，勿动，每次运行自动更新！（在这看报告）
+├── river.jpg                  # 流域示意图，勿动！（报告内嵌图片）
 ├── screenshot_list.png        # 列表页截图
 ├── screenshot_detail_1.png    # 详情页截图1
 ├── screenshot_detail_2.png    # 详情页截图2
 ├── screenshot_detail_3.png    # 详情页截图3
 ├── screenshot_detail_4.png    # 详情页截图4
 ├── screenshot_detail_5.png    # 详情页截图5
-├── README.md                  # 项目说明文档
-└── 使用说明.txt                # 打包后供同事查看的说明文档
+└── 使用说明.txt                # 使用说明文档
 ```
 
+## 联系方式
+
+### 如果您在使用时有问题或建议，欢迎联系我
+- **电子邮箱；liufuyu01@sinotrans.com**
