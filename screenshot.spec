@@ -4,22 +4,15 @@ import os
 import shutil
 
 block_cipher = None
-
-# 获取chromium路径并准备打包数据
-chromium_path = r'C:\chromium-1234'
-# chromium_path = r'C:\Users\zwy\AppData\Local\ms-playwright\chromium-1234' 备用路径
+# 打包数据文件
 datas = [('river.jpg', '.')]
-
-# 如果chromium存在，添加到打包数据
-if os.path.exists(chromium_path):
-    datas.append((chromium_path, 'ms-playwright'))
 
 a = Analysis(
     ['screenshot.py'],
     pathex=[],
     binaries=[],
     datas=datas,
-    hiddenimports=['playwright', 'playwright.sync_api'],
+    hiddenimports=['bs4', 'requests', 'urllib3'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -56,4 +49,3 @@ exe = EXE(
     entitlements_file=None,
     icon=None,
 )
-

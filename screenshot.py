@@ -1,9 +1,10 @@
-from playwright.sync_api import sync_playwright
+import requests
 import time
 from bs4 import BeautifulSoup
 import re
 import json
 from datetime import datetime
+import os
 
 
 def load_data():
@@ -719,30 +720,30 @@ def generate_html_report(data):
 def parse_water_level_data(html_content, publish_date):
     """解析水位数据"""
     soup = BeautifulSoup(html_content, 'html.parser')
-    
+
     # 目标站点
     target_stations = ['梧州', '江口', '贵港', '武宣', '来宾', '峦城']
-    
+
     # 查找所有表格
     tables = soup.find_all('table')
-    
+
     results = {}
-    
+
     for table in tables:
         rows = table.find_all('tr')
-        
+
         # 跳过表头行
         for row in rows[3:]:  # 前3行是表头
             cells = row.find_all('td')
             if len(cells) >= 4:
                 station_name = cells[0].get_text(strip=True)
-                
+
                 # 检查是否为目标站点
                 if station_name in target_stations:
                     observation_time = cells[1].get_text(strip=True)
                     water_level = cells[2].get_text(strip=True)
                     change_value = cells[3].get_text(strip=True)
-                    
+
                     # 将变化值转换为数字：1表示上升，0表示持平或下降
                     try:
                         change_num = float(change_value)
@@ -759,15 +760,17 @@ def parse_water_level_data(html_content, publish_date):
                             change_des = "▼"
                             color = "blue"
                         else:
-                            change_value_num <= -2# 大幅下降
+                            change_value_num = 0  # 大幅下降
                             change_des = "⏬︎"
                             color = "blue"
                     except (ValueError, TypeError):
                         change_value_num = 0  # 无法解析时默认为0
-                    
+                        change_des = "▼"
+                        color = "blue"
+
                     # 组合完整日期时间
                     full_datetime = f"{publish_date} {observation_time}"
-                    
+
                     # 使用字典存储，站名为键，重复的会自动覆盖
                     results[station_name] = {
                         '站名': station_name,
@@ -778,7 +781,7 @@ def parse_water_level_data(html_content, publish_date):
                         '颜色': color,
                         '时间': full_datetime
                     }
-    
+
     return results
 
 
@@ -848,239 +851,216 @@ def parse_reservoir_data(html_content, publish_date):
 def main():
     import sys
     import os
-    import shutil
 
-    # 打包后的exe处理chromium路径
-    if getattr(sys, 'frozen', False):
-        # 打包后的exe
-        base_path = sys._MEIPASS
-        packed_chromium = os.path.join(base_path, 'ms-playwright', 'chromium-1234')
+    # 设置标准输出编码为 UTF-8，避免 Windows 终端 GBK 编码问题
+    if sys.platform == 'win32':
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-        # Playwright期望的chromium路径
-        temp_dir = os.path.join(os.environ.get('LOCALAPPDATA', ''), 'ms-playwright')
-        target_chromium = os.path.join(temp_dir, 'chromium-1234')
+    # 设置请求头，模拟浏览器访问
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
 
-        # 如果打包了chromium，且目标位置不存在，则复制过去
-        if os.path.exists(packed_chromium) and not os.path.exists(target_chromium):
-            print("正在复制chromium浏览器驱动...")
-            try:
-                os.makedirs(temp_dir, exist_ok=True)
-                shutil.copytree(packed_chromium, target_chromium)
-                print("chromium浏览器驱动复制完成！")
-            except Exception as e:
-                print(f"复制chromium失败: {e}")
+    # 访问目标网站
+    print("正在打开网站...")
+    base_url = "https://www.gxghj.cn/c/fw/slcx"
+    try:
+        response = requests.get(base_url, headers=headers, timeout=30)
+        response.encoding = 'utf-8'
+        print(f"网站访问成功，状态码: {response.status_code}")
+    except Exception as e:
+        print(f"访问网站失败: {e}")
+        return
 
-        # 设置Playwright浏览器路径
-        os.environ['PLAYWRIGHT_BROWSERS_PATH'] = temp_dir
+    # 解析列表页HTML
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    with sync_playwright() as p:
-        # 启动浏览器，headless=False 表示浏览器窗口可见
-        browser = p.chromium.launch(headless=False)
-        
-        # 创建浏览器上下文
-        context = browser.new_context()
-        
-        # 创建页面
-        page = context.new_page()
-        
-        # 访问目标网站
-        print("正在打开网站...")
-        page.goto("https://www.gxghj.cn/c/fw/slcx")
-        
-        # 等待页面加载完成
-        print("等待页面加载...")
+    # 获取前5条新闻链接
+    news_items = soup.select('.newsList li')
+    num_links = min(5, len(news_items))
 
-        time.sleep(5)
+    print(f"找到 {len(news_items)} 条新闻，将处理前 {num_links} 条")
 
-        #page.wait_for_load_state("networkidle")
-        
-        # 截图保存列表页
-        screenshot_path = "screenshot_list.png"
-        page.screenshot(path=screenshot_path)
-        print(f"列表页截图已保存到: {screenshot_path}")
-        
-        # 获取前5条新闻链接
-        links = page.locator('.newsList li')
-        link_count = links.count()
-        
-        # 只处理前5条或实际存在的链接数
-        num_links = min(5, link_count)
-        
-        # 使用字典存储所有数据，站名为键
-        all_water_data = {}
-        
-        # 使用字典存储水库数据，枢纽名为键
-        all_reservoir_data = {}
-        
-        for i in range(num_links):
-            # 重新获取列表（避免stale element）
-            current_links = page.locator('.newsList li')
-            link = current_links.nth(i)
-            
-            # 获取链接标题
-            link_title = link.locator('.newsTitle').inner_text()
-            print(f"\n{'='*50}")
-            print(f"正在处理第 {i+1} 条链接: {link_title}")
-            print(f"{'='*50}")
-            
-            # 点击链接
-            link.locator('a').click()
-            
-            # 等待详情页加载完成
-            print("等待详情页加载...")
+    # 使用字典存储所有数据，站名为键
+    all_water_data = {}
 
-            time.sleep(5)
+    # 使用字典存储水库数据，枢纽名为键
+    all_reservoir_data = {}
 
-            #page.wait_for_load_state("networkidle")
-            
-            # 截图保存详情页
-            screenshot_detail_path = f"screenshot_detail_{i+1}.png"
-            page.screenshot(path=screenshot_detail_path)
-            print(f"详情页截图已保存到: {screenshot_detail_path}")
-            
-            # 获取发布日期
-            publish_date_info = page.locator('.info').inner_text()
+    for i in range(num_links):
+        news_item = news_items[i]
+
+        # 获取链接标题和URL
+        title_tag = news_item.select_one('.newsTitle')
+        link_tag = news_item.select_one('a')
+
+        if not title_tag or not link_tag:
+            continue
+
+        link_title = title_tag.get_text(strip=True)
+        link_url = link_tag.get('href')
+
+        # 处理相对URL
+        if link_url.startswith('/'):
+            link_url = f"https://www.gxghj.cn{link_url}"
+        elif not link_url.startswith('http'):
+            link_url = f"https://www.gxghj.cn/c/fw/slcx/{link_url}"
+
+        print(f"\n{'='*50}")
+        print(f"正在处理第 {i+1} 条链接: {link_title}")
+        print(f"{'='*50}")
+
+        # 访问详情页
+        try:
+            detail_response = requests.get(link_url, headers=headers, timeout=30)
+            detail_response.encoding = 'utf-8'
+            print(f"详情页访问成功，状态码: {detail_response.status_code}")
+        except Exception as e:
+            print(f"访问详情页失败: {e}")
+            continue
+
+        # 解析详情页HTML
+        detail_soup = BeautifulSoup(detail_response.text, 'html.parser')
+
+        # 获取发布日期
+        info_tag = detail_soup.select_one('.info')
+        if info_tag:
+            publish_date_info = info_tag.get_text()
             date_match = re.search(r'发布日期：(\d{4}-\d{2}-\d{2})', publish_date_info)
             if date_match:
                 publish_date = date_match.group(1)
             else:
                 publish_date = "未知日期"
-            
-            # 获取页面HTML内容
-            page_html = page.content()
-            
-            # 解析水位数据
-            water_data = parse_water_level_data(page_html, publish_date)
-            # 合并到总数据中，重复站点会自动覆盖
-            all_water_data.update(water_data)
-            
-            # 解析水库/船闸数据
-            reservoir_data = parse_reservoir_data(page_html, publish_date)
-            # 合并到水库数据中，重复枢纽会自动覆盖
-            all_reservoir_data.update(reservoir_data)
-            
-            # 返回列表页
-            print("返回列表页...")
-            page.goto("https://www.gxghj.cn/c/fw/slcx")
+        else:
+            publish_date = "未知日期"
 
-            time.sleep(5)
+        print(f"发布日期: {publish_date}")
 
-            #page.wait_for_load_state("networkidle")
-            
-            time.sleep(1)
-        
-        # 输出所有爬取的数据
-        print("\n\n")
-        print("=" * 60)
-        print("所有水位数据汇总")
-        print("=" * 60)
-        
-        for station_name in sorted(all_water_data.keys()):
-            data = all_water_data[station_name]
-            change_desc = "上升" if data['变化'] == 1 else "持平或下降"
-            print(f"站名: {data['站名']}")
-            print(f"水位: {data['水位']} 米")
-            print(f"变化: {data['变化']} ({change_desc})")
-            print(f"变化值: {data['变化值']}")
-            print(f"情况: {data['情况']}")
-            print(f"颜色: {data['颜色']}")
-            print(f"时间: {data['时间']}")
-            print("-" * 60)
-        
-        # 输出所有爬取的水库数据
-        print("\n\n")
-        print("=" * 60)
-        print("水库/船闸数据汇总")
-        print("=" * 60)
-        
-        for reservoir_name in sorted(all_reservoir_data.keys()):
-            data = all_reservoir_data[reservoir_name]
-            releasing_status = "放水中" if data['是否放水'] == 1 else "未放水"
-            print(f"站名: {data['站名']}")
-            print(f"时间: {data['时间']}")
-            print(f"上游水位: {data['上游水位']} 米")
-            print(f"入库流量: {data['入库流量']} m³/s")
-            print(f"出库流量: {data['出库流量']} m³/s")
-            print(f"是否放水: {data['是否放水']} ({releasing_status})")
-            print("-" * 60)
-        
-        # 加载历史数据
-        print("\n正在加载历史数据...")
-        historical_data = load_data()
-        
-        # 检查是否已存在相同时间的数据
-        new_data_time = list(all_water_data.values())[0]['时间'] if all_water_data else None
-        existing_index = -1
-        if new_data_time:
-            for i, record in enumerate(historical_data):
-                if record['时间'] == new_data_time:
-                    existing_index = i
-                    break
-        
-        # 添加或更新数据
-        if new_data_time:
-            # 计算上游整体情况（来宾、武宣、贵港、峦城、江口）
-            upstream_stations = ['来宾', '武宣', '贵港', '峦城', '江口']
-            upstream_change_sum = 0
-            up_change_value_sum = 0
-            for station in upstream_stations:
-                if station in all_water_data:
-                    upstream_change_sum += all_water_data[station]['变化']
-                    up_change_value_sum += float(all_water_data[station]['变化值'])
+        # 解析水位数据
+        water_data = parse_water_level_data(detail_response.text, publish_date)
+        # 合并到总数据中，重复站点会自动覆盖
+        all_water_data.update(water_data)
 
-            
-            # 根据上游变化和值决定整体情况
-            if upstream_change_sum == 0:
-                upstream_status = "下降⏬︎"
-                upstream_color = "blue"
-            elif upstream_change_sum == 1:
-                upstream_status = "下降▼"
-                upstream_color = "blue"
-            elif upstream_change_sum == 2:
-                upstream_status = "上升↗︎"
-                upstream_color = "red"
-            elif upstream_change_sum == 3:
-                upstream_status = "上升▲"
-                upstream_color = "red"
-            else:  # 4或5
-                upstream_status = "上升⏫︎"
-                upstream_color = "red"
-            
-            record_data = {
-                '时间': new_data_time,
-                '站点数据': all_water_data,
-                '枢纽数据': all_reservoir_data,
-                '上游情况': {
-                    '描述': upstream_status,
-                    '颜色': upstream_color,
-                    '变化和': upstream_change_sum,
-                    '总变化和': up_change_value_sum
-                }
+        # 解析水库/船闸数据
+        reservoir_data = parse_reservoir_data(detail_response.text, publish_date)
+        # 合并到水库数据中，重复枢纽会自动覆盖
+        all_reservoir_data.update(reservoir_data)
+
+        print(f"本次获取水位数据: {len(water_data)} 个站点")
+        print(f"本次获取水库数据: {len(reservoir_data)} 个枢纽")
+
+        # 短暂延迟，避免请求过快
+        time.sleep(1)
+
+    # 输出所有爬取的数据
+    print("\n\n")
+    print("=" * 60)
+    print("所有水位数据汇总")
+    print("=" * 60)
+
+    for station_name in sorted(all_water_data.keys()):
+        data = all_water_data[station_name]
+        change_desc = "上升" if data['变化'] == 1 else "持平或下降"
+        print(f"站名: {data['站名']}")
+        print(f"水位: {data['水位']} 米")
+        print(f"变化: {data['变化']} ({change_desc})")
+        print(f"变化值: {data['变化值']}")
+        print(f"情况: {data['情况']}")
+        print(f"颜色: {data['颜色']}")
+        print(f"时间: {data['时间']}")
+        print("-" * 60)
+
+    # 输出所有爬取的水库数据
+    print("\n\n")
+    print("=" * 60)
+    print("水库/船闸数据汇总")
+    print("=" * 60)
+
+    for reservoir_name in sorted(all_reservoir_data.keys()):
+        data = all_reservoir_data[reservoir_name]
+        releasing_status = "放水中" if data['是否放水'] == 1 else "未放水"
+        print(f"站名: {data['站名']}")
+        print(f"时间: {data['时间']}")
+        print(f"上游水位: {data['上游水位']} 米")
+        print(f"入库流量: {data['入库流量']} m³/s")
+        print(f"出库流量: {data['出库流量']} m³/s")
+        print(f"是否放水: {data['是否放水']} ({releasing_status})")
+        print("-" * 60)
+
+    # 加载历史数据
+    print("\n正在加载历史数据...")
+    historical_data = load_data()
+
+    # 检查是否已存在相同时间的数据
+    new_data_time = list(all_water_data.values())[0]['时间'] if all_water_data else None
+    existing_index = -1
+    if new_data_time:
+        for i, record in enumerate(historical_data):
+            if record['时间'] == new_data_time:
+                existing_index = i
+                break
+
+    # 添加或更新数据
+    if new_data_time:
+        # 计算上游整体情况（来宾、武宣、贵港、峦城、江口）
+        upstream_stations = ['来宾', '武宣', '贵港', '峦城', '江口']
+        upstream_change_sum = 0
+        up_change_value_sum = 0
+        for station in upstream_stations:
+            if station in all_water_data:
+                upstream_change_sum += all_water_data[station]['变化']
+                up_change_value_sum += float(all_water_data[station]['变化值'])
+
+
+        # 根据上游变化和值决定整体情况
+        if upstream_change_sum == 0:
+            upstream_status = "下降⏬︎"
+            upstream_color = "blue"
+        elif upstream_change_sum == 1:
+            upstream_status = "下降▼"
+            upstream_color = "blue"
+        elif upstream_change_sum == 2:
+            upstream_status = "上升↗︎"
+            upstream_color = "red"
+        elif upstream_change_sum == 3:
+            upstream_status = "上升▲"
+            upstream_color = "red"
+        else:  # 4或5
+            upstream_status = "上升⏫︎"
+            upstream_color = "red"
+
+        record_data = {
+            '时间': new_data_time,
+            '站点数据': all_water_data,
+            '枢纽数据': all_reservoir_data,
+            '上游情况': {
+                '描述': upstream_status,
+                '颜色': upstream_color,
+                '变化和': upstream_change_sum,
+                '总变化和': up_change_value_sum
             }
-            
-            print(f"\n上游整体情况: {upstream_status} 变化和: {upstream_change_sum} 总变化和: {up_change_value_sum}")
-            
-            if existing_index >= 0:
-                print(f"更新时间 {new_data_time} 的数据")
-                historical_data[existing_index] = record_data
-            else:
-                print(f"添加新的时间数据: {new_data_time}")
-                historical_data.append(record_data)
-        
-        # 保存数据
-        save_data(historical_data)
-        print(f"数据已保存，当前共有 {len(historical_data)} 条记录")
-        
-        # 生成HTML报告
-        print("\n正在生成HTML可视化报告...")
-        generate_html_report(historical_data)
-        print("报告已生成: water_level_report.html")
-        
-        # 等待几秒查看效果
-        time.sleep(2)
-        
-        # 关闭浏览器
-        browser.close()
+        }
+
+        print(f"\n上游整体情况: {upstream_status} 变化和: {upstream_change_sum} 总变化和: {up_change_value_sum}")
+
+        if existing_index >= 0:
+            print(f"更新时间 {new_data_time} 的数据")
+            historical_data[existing_index] = record_data
+        else:
+            print(f"添加新的时间数据: {new_data_time}")
+            historical_data.append(record_data)
+
+    # 保存数据
+    save_data(historical_data)
+    print(f"数据已保存，当前共有 {len(historical_data)} 条记录")
+
+    # 生成HTML报告
+    print("\n正在生成HTML可视化报告...")
+    generate_html_report(historical_data)
+    print("报告已生成: water_level_report.html")
+
+    print("\n数据爬取完成！")
 
 
 if __name__ == "__main__":
