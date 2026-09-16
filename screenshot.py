@@ -624,8 +624,9 @@ def generate_html_report(data):
                     </tr>
 """
 
-    # 准备图表数据
-    labels = [record['时间'] for record in sorted_data]
+    # 准备图表数据 - 只显示最新的14条记录
+    chart_data = sorted_data[-14:] if len(sorted_data) > 14 else sorted_data
+    labels = [record['时间'] for record in chart_data]
     stations = ['梧州', '江口', '贵港', '武宣', '来宾', '峦城']
     colors = [
         'rgb(255, 99, 132)',
@@ -639,7 +640,7 @@ def generate_html_report(data):
     datasets = []
     for i, station in enumerate(stations):
         water_levels = []
-        for record in sorted_data:
+        for record in chart_data:
             station_data = record.get('站点数据', {})
             water_level = station_data.get(station, {}).get('水位', 0)
             # 尝试转换为浮点数，如果失败则使用0
@@ -647,7 +648,7 @@ def generate_html_report(data):
                 water_levels.append(float(water_level))
             except (ValueError, TypeError):
                 water_levels.append(0)
-        
+
         datasets.append(f"""
                 {{
                     label: '{station}',
@@ -662,13 +663,13 @@ def generate_html_report(data):
                 </tbody>
             </table>
         </div>
-        
+
         <div class="timestamp">
             报告生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}<br>
             数据记录数: {len(data)} 条
         </div>
     </div>
-    
+
     <script>
         const ctx = document.getElementById('waterLevelChart').getContext('2d');
         new Chart(ctx, {{
@@ -683,7 +684,7 @@ def generate_html_report(data):
                 plugins: {{
                     title: {{
                         display: true,
-                        text: '各站点水位变化趋势图',
+                        text: '各站点水位变化趋势图 (最近{len(chart_data)}天)',
                         font: {{
                             size: 18
                         }}
