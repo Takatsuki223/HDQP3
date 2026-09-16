@@ -876,9 +876,9 @@ def main():
     # 解析列表页HTML
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # 获取前5条新闻链接
+    # 获取前6条新闻链接
     news_items = soup.select('.newsList li')
-    num_links = min(5, len(news_items))
+    num_links = min(6, len(news_items))
 
     print(f"找到 {len(news_items)} 条新闻，将处理前 {num_links} 条")
 
