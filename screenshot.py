@@ -120,13 +120,15 @@ def generate_html_report(data):
         .warningStatus-value {{
             font-size: 28px;
             font-weight: bold;
-            color: red;
         }}
         .status-red {{
             color: red;
         }}
         .status-blue {{
             color: #007bff;
+        }}
+        .status-green {{
+            color: #03ed08;
         }}
         .image-section {{
             max-width: 90%;
@@ -444,8 +446,13 @@ def generate_html_report(data):
         latest_wuzhou_wSymbol = '⚠️'
         station_warning += '梧州水位过低！'
 
+    swC = "green"
+    
     if station_warning != ' ':
         station_warning += '请及时注意水位变化，加强船舶调度！'
+        swC = "red"
+    else:
+        station_warning += '无预警信息'
 
     #水库预警文字
     reservoir_warning = ' '
@@ -522,9 +529,14 @@ def generate_html_report(data):
 
     if latest_changzhou_wSymbol == ' ':
         latest_changzhou_wSymbol += '正常'
+
+    rwC = "green"
     
     if reservoir_warning != ' ':
         reservoir_warning += '请及时注意水位变化，加强船舶调度！'
+        rwC = "red"
+    else:
+        reservoir_warning += '无预警信息'
     
     # 添加状态显示区域
     html_content += f"""
@@ -552,13 +564,13 @@ def generate_html_report(data):
         <div class="status-section">
             <div class="status-item">
                 <span class="status-label">🚨水库预警：</span>
-                <span class="warningStatus-value">
+                <span class="warningStatus-value status-{rwC}">
                     {reservoir_warning}
                 </span>
             </div>
             <div class="status-item">
                 <span class="status-label">🚨站点预警：</span>
-                <span class="warningStatus-value">
+                <span class="warningStatus-value status-{swC}">
                     {station_warning}
                 </span>
             </div>
