@@ -120,6 +120,7 @@ def generate_html_report(data):
         .warningStatus-value {{
             font-size: 28px;
             font-weight: bold;
+            line-height: 40px;
         }}
         .status-red {{
             color: red;
@@ -329,6 +330,7 @@ def generate_html_report(data):
     s1 = 0
     if float(latest_wuzhou_data) >= 18.5:
         latest_wuzhou_wSymbol = '🚨'
+        station_warning += '<br> &nbsp;'
         station_warning += '梧州（已超警'
         station_warning += str(float(latest_wuzhou_data)-18.5)
         station_warning += '米）'
@@ -338,6 +340,8 @@ def generate_html_report(data):
         latest_jiangkou_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '江口（已超警'
         station_warning += str(float(latest_jiangkou_data)-31.7)
         station_warning += '米）'
@@ -347,6 +351,8 @@ def generate_html_report(data):
         latest_guigang_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '贵港（已超警'
         station_warning += str(float(latest_guigang_data)-41.2)
         station_warning += '米）'
@@ -356,6 +362,8 @@ def generate_html_report(data):
         latest_luancheng_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '峦城（已超警'
         station_warning += str(float(latest_luancheng_data)-64.2)
         station_warning += '米）'
@@ -365,6 +373,8 @@ def generate_html_report(data):
         latest_wuxuan_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '武宣（已超警'
         station_warning += str(float(latest_wuxuan_data)-61.4)
         station_warning += '米）'
@@ -374,32 +384,38 @@ def generate_html_report(data):
         latest_laibing_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '来宾（已超警'
         station_warning += str(float(latest_laibing_data)-62)
         station_warning += '米）'
         s1 = 1
 
     if s1 != 0:
-        station_warning += '站点水位已超警！'
+        station_warning += '站点水位已超警！请紧密关注水位变化！<br>'
 
     s2 = 0
     if float(latest_wuzhou_data) >= 13 and float(latest_wuzhou_data) < 18.5:
         latest_wuzhou_wSymbol = '⚠️'
+        station_warning += '<br> &nbsp;'
         station_warning += '梧州（水位已超过13米）'
 
     if float(latest_jiangkou_data) >= 26 and float(latest_jiangkou_data) < 31.7:
         latest_jiangkou_wSymbol = '⚠️'
         if s2 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '江口（水位已超过26米）'
 
     if s2 != 0:
-        station_warning += '水位较高，注意警戒！'
+        station_warning += '水位较高，注意警戒！<br>'
 
     #站点是否需要水位快速上涨警告
     s3 = 0
     if float(latest_wuzhou_change) > 2:
         latest_wuzhou_wSymbol = '🚨'
+        station_warning += '<br> &nbsp;'
         station_warning += '梧州'
         s3 = 1
 
@@ -407,6 +423,8 @@ def generate_html_report(data):
         latest_jiangkou_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '江口'
         s3 = 1
 
@@ -414,6 +432,8 @@ def generate_html_report(data):
         latest_wuxuan_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '武宣'
         s3 = 1
 
@@ -421,6 +441,8 @@ def generate_html_report(data):
         latest_laibing_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '来宾'
         s3 = 1
 
@@ -428,6 +450,8 @@ def generate_html_report(data):
         latest_luancheng_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '峦城'
         s3 = 1
 
@@ -435,21 +459,24 @@ def generate_html_report(data):
         latest_guigang_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
+        else:
+            station_warning += '<br> &nbsp;'
         station_warning += '贵港'
         s3 = 1
 
     if s3 != 0:
-        station_warning += '水位快速上涨（日涨幅超2米）！'
+        station_warning += '水位快速上涨（日涨幅已超2米）！请紧密关注水位变化！<br> '
 
     #梧州是否需要水位过低警告
     if float(latest_wuzhou_data) < 4:
         latest_wuzhou_wSymbol = '⚠️'
-        station_warning += '梧州水位过低！'
+        station_warning += '<br> &nbsp;'
+        station_warning += '梧州水位过低，可能影响船舶通航！<br> '
 
     swC = "green"
     
     if station_warning != ' ':
-        station_warning += '请及时注意水位变化，加强船舶调度！'
+        station_warning += '加强船舶调度！'
         swC = "red"
     else:
         station_warning += '无预警信息'
@@ -468,6 +495,7 @@ def generate_html_report(data):
     r2 = 0
     if float(latest_datengxia_fs) == 1 or float(latest_datengxia_ckll) >= 12000:
         latest_datengxia_wSymbol += '🌊'
+        reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '大藤峡枢纽'
         if float(latest_datengxia_ckll) >= 12000:
             reservoir_warning += '(出库流量达'
@@ -478,6 +506,8 @@ def generate_html_report(data):
         latest_guiping_wSymbol += '🌊'
         if r2 != 0:
             reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '桂平枢纽'
         if float(latest_guiping_ckll) >= 12000:
             reservoir_warning += '(出库流量达'
@@ -488,6 +518,8 @@ def generate_html_report(data):
         latest_changzhou_wSymbol += '🌊'
         if r2 != 0:
             reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '长洲枢纽'
         if float(latest_changzhou_ckll) >= 15000:
             reservoir_warning += '(出库流量达'
@@ -497,29 +529,59 @@ def generate_html_report(data):
     if r2 != 0:
         reservoir_warning += '出库流量更大，可能正在放水，对下游水位会有额外影响。'
 
-     #水库是否需要水位警告符号
-    r1 = 0
-    if float(latest_datengxia_data) >= 60:
+    #水库是否需要水位超过正常水位警告
+    r3 = 0
+    if float(latest_datengxia_data) >= 61:
         latest_datengxia_wSymbol += '🚨'
+        reservoir_warning += '<br> &nbsp;'
+        reservoir_warning += '大藤峡枢纽'
+        r3 = 1
+    if float(latest_guiping_data) >= 31.5:
+        latest_guiping_wSymbol += '🚨'
+        if r3 != 0:
+            reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
+        reservoir_warning += '桂平枢纽'
+        r3 = 1
+    if float(latest_changzhou_data) >= 20.6:
+        latest_changzhou_wSymbol += '🚨'
+        if r3 != 0:
+            reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
+        reservoir_warning += '长洲枢纽'
+        r3 = 1
+    if r3 != 0:
+        reservoir_warning += '水位超过正常蓄水位，可能进行泄洪放水！'
+     #水库是否需要水位高警告符号
+    r1 = 0
+    if float(latest_datengxia_data) >= 60 and float(latest_datengxia_data) < 61:
+        latest_datengxia_wSymbol += '⚠️'
+        reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '大藤峡枢纽'
         latest_datengxia_color = 'red'
         r1 = 1
-    if float(latest_guiping_data) >= 31:
-        latest_guiping_wSymbol += '🚨'
+    if float(latest_guiping_data) >= 31 and float(latest_guiping_data) < 31.5:
+        latest_guiping_wSymbol += '⚠️'
         if r1 != 0:
             reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '桂平枢纽'
         latest_guiping_color = 'red'
         r1 = 1
-    if float(latest_changzhou_data) >= 28:
-        latest_changzhou_wSymbol += '🚨'
+    if float(latest_changzhou_data) >= 19 and float(latest_changzhou_data) < 20.6:
+        latest_changzhou_wSymbol += '⚠️'
         if r1 != 0:
             reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '长洲枢纽'
         latest_changzhou_color = 'red'
         r1 = 1
     if r1 != 0:
-        reservoir_warning += '水位高，可能开闸放水！'
+        reservoir_warning += '接近正常蓄水位，请留意开闸放水信息！'
 
     if latest_datengxia_wSymbol == ' ':
         latest_datengxia_wSymbol += '正常'
@@ -533,7 +595,7 @@ def generate_html_report(data):
     rwC = "green"
     
     if reservoir_warning != ' ':
-        reservoir_warning += '请及时注意水位变化，加强船舶调度！'
+        #reservoir_warning += '请及时注意水位变化，加强船舶调度！'
         rwC = "red"
     else:
         reservoir_warning += '无预警信息'
@@ -545,30 +607,34 @@ def generate_html_report(data):
             <div class="status-item">
                 <span class="status-label">上游整体情况：</span>
                 <span class="status-value status-{latest_upstream_color}">
-                    水位{latest_upstream_des}{latest_upstream_desc}
+                    水位{latest_upstream_des}{latest_upstream_desc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </span>
             </div>
             <div class="status-item">
                 <span class="status-label">今日梧州水位：</span>
                 <span class="status-value status-{latest_wuzhou_color}">
-                    {latest_wuzhou_data}m{latest_wuzhou_desc}
+                    {latest_wuzhou_data}m{latest_wuzhou_desc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+                <span class="status-label">较昨日变化：</span>
+                <span class="status-value status-{latest_wuzhou_color}">
+                    {latest_wuzhou_change}m{latest_wuzhou_desc}
                 </span>
             </div>
             <div class="status-item">
                 <span class="status-label">近2天梧州水位预报：</span>
                 <span class="status-value status-{latest_wuzhou_pColor}">
-                    {latest_wuzhou_p1}m~{latest_wuzhou_p2}m 预计水位{latest_wuzhou_pDesc}{latest_wuzhou_pDirection}{latest_wuzhou_pSymbol}  
+                    {latest_wuzhou_p1}m~{latest_wuzhou_p2}m      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   预计水位{latest_wuzhou_pDesc}{latest_wuzhou_pDirection}{latest_wuzhou_pSymbol}  
                 </span>
             </div>
         </div>
-        <div class="status-section">
-            <div class="status-item">
+        <div class="status-section" style="gap: 0px">
+            <div class="status-item" style="min-width:1300px">
                 <span class="status-label">🚨水库预警：</span>
                 <span class="warningStatus-value status-{rwC}">
                     {reservoir_warning}
                 </span>
             </div>
-            <div class="status-item">
+            <div class="status-item" style="min-width:1300px">
                 <span class="status-label">🚨站点预警：</span>
                 <span class="warningStatus-value status-{swC}">
                     {station_warning}
@@ -627,12 +693,12 @@ def generate_html_report(data):
         html_content += f"""
                     <tr>
                         <td>{record['时间']}</td>
-                        <td>{station_data.get('梧州', {}).get('水位', '-')}{station_data.get('梧州', {}).get('情况', ' ')}</td>
-                        <td>{station_data.get('江口', {}).get('水位', '-')}{station_data.get('江口', {}).get('情况', ' ')}</td>
-                        <td>{station_data.get('贵港', {}).get('水位', '-')}{station_data.get('贵港', {}).get('情况', ' ')}</td>
-                        <td>{station_data.get('武宣', {}).get('水位', '-')}{station_data.get('武宣', {}).get('情况', ' ')}</td>
-                        <td>{station_data.get('来宾', {}).get('水位', '-')}{station_data.get('来宾', {}).get('情况', ' ')}</td>
-                        <td>{station_data.get('峦城', {}).get('水位', '-')}{station_data.get('峦城', {}).get('情况', ' ')}</td>
+                        <td>{station_data.get('梧州', {}).get('水位', '-')} {station_data.get('梧州', {}).get('情况', ' ')} ({station_data.get('梧州', {}).get('变化值', '-')})</td>
+                        <td>{station_data.get('江口', {}).get('水位', '-')} {station_data.get('江口', {}).get('情况', ' ')} ({station_data.get('江口', {}).get('变化值', '-')})</td>
+                        <td>{station_data.get('贵港', {}).get('水位', '-')} {station_data.get('贵港', {}).get('情况', ' ')} ({station_data.get('贵港', {}).get('变化值', '-')})</td>
+                        <td>{station_data.get('武宣', {}).get('水位', '-')} {station_data.get('武宣', {}).get('情况', ' ')} ({station_data.get('武宣', {}).get('变化值', '-')})</td>
+                        <td>{station_data.get('来宾', {}).get('水位', '-')} {station_data.get('来宾', {}).get('情况', ' ')} ({station_data.get('来宾', {}).get('变化值', '-')})</td>
+                        <td>{station_data.get('峦城', {}).get('水位', '-')} {station_data.get('峦城', {}).get('情况', ' ')} ({station_data.get('峦城', {}).get('变化值', '-')})</td>
                     </tr>
 """
 
