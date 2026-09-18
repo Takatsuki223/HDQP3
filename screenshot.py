@@ -504,14 +504,14 @@ def generate_html_report(data):
         reservoir_warning += '大藤峡枢纽'
         latest_datengxia_color = 'red'
         r1 = 1
-    if float(latest_guiping_data) >= 31.5:
+    if float(latest_guiping_data) >= 31:
         latest_guiping_wSymbol += '🚨'
         if r1 != 0:
             reservoir_warning += '、'
         reservoir_warning += '桂平枢纽'
         latest_guiping_color = 'red'
         r1 = 1
-    if float(latest_changzhou_data) >= 30:
+    if float(latest_changzhou_data) >= 28:
         latest_changzhou_wSymbol += '🚨'
         if r1 != 0:
             reservoir_warning += '、'

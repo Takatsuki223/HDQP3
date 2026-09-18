@@ -11,8 +11,8 @@
 **5.** 支持将.py文件打包为.exe程序，可以在其他电脑更方便的使用。
 
 ## 使用说明（打包后）
-**所有操作仅在"西江水位查看分析"文件夹内操作使用即可**  
-**1.** 打开文件夹（西江水位查看分析文件夹）后，**双击运行"水位数据爬取.exe"文件。**  
+**所有操作仅在"dist"文件夹内操作使用即可，请先手动将river.jpg、water_level_data.json复制到dist文件夹内！**  
+**1.** 打开文件夹（名为“dist”的文件夹）后，**双击运行"水位数据爬取.exe"文件。**  
 **2.** 会打开一个终端页面，**请耐心等待10秒左右**，程序会开始自动运行。    
 **3.** 程序开始自动运行后，**终端页面会输出水位信息以及运行情况**，可以通过终端判断是否运行正常。   
 **4.** 运行完成后，终端会自动关闭。并且**会在程序同文件夹内生成一个"water_level_report.html"网页文件，双击打开（用浏览器打开）即可查看可视化报告。**
@@ -43,7 +43,7 @@
 **1. 克隆项目**
 ```
 # 复制以下命令到终端执行
-git clone https://gitee.com/takatsuki225/hdqp2.git
+git clone https://github.com/Takatsuki223/HDQP3.git
 
 #进入目录
 cd hdqp3
@@ -62,8 +62,11 @@ python screenshot.py
 
 **4. 打包为程序**
 ```
-#打包成exe程序
+#打包成exe程序 会在目录生成dist和build两个文件夹，在dist文件夹内输出exe程序。
 python -m PyInstaller screenshot.spec
+
+# 复制流域图、数据文件以及程序使用说明复制到dist文件夹内（必做！否则可视化报告会出错！）
+cp @("river.jpg", "water_level_data.json", "使用说明.txt") dist 
 ```
 ## 项目架构
 
