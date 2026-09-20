@@ -664,17 +664,23 @@ def generate_html_report(data):
         </div>
         
         <div class="image-section">
-            <div class="image-overlay-text wz status-{latest_wuzhou_color}">{latest_wuzhou_data}m{latest_wuzhou_desc}</div>
+            <div class="image-overlay-text status-{latest_wuzhou_color}" style="position: absolute; top: 52%; left: 92.5%; font-size:200%;">{latest_wuzhou_data}m</div>
+            <div class="image-overlay-text status-{latest_wuzhou_color}" style="position: absolute; top: 62%; left: 92.5%; font-size:150%;">{latest_wuzhou_change}m{latest_wuzhou_desc}</div>
             <div class="image-overlay-text status-{latest_wuzhou_color}" style="position: absolute;top: 41.25%;left: 86%;">====</div>
-            <div class="image-overlay-text jk status-{latest_jiangkou_color}">{latest_jiangkou_data}m{latest_jiangkou_desc}</div>
+            <div class="image-overlay-text status-{latest_jiangkou_color}" style="position: absolute; top: 52%; left: 68%; font-size:200%;">{latest_jiangkou_data}m</div>
+            <div class="image-overlay-text status-{latest_jiangkou_color}" style="position: absolute; top: 62%; left: 68%; font-size:150%;">{latest_jiangkou_change}m{latest_jiangkou_desc}</div>
             <div class="image-overlay-text status-{latest_jiangkou_color}" style="position: absolute; top: 41.4%; left: 63.85%;">==</div>
-            <div class="image-overlay-text wx status-{latest_wuxuan_color}">{latest_wuxuan_data}m{latest_wuxuan_desc}</div>
+            <div class="image-overlay-text status-{latest_wuxuan_color}" style="position: absolute; top: 12%; left: 39%; font-size:200%;">{latest_wuxuan_data}m</div>
+            <div class="image-overlay-text status-{latest_wuxuan_color}" style="position: absolute; top: 6%; left: 39%; font-size:150%;">{latest_wuxuan_change}m{latest_wuxuan_desc}</div>
             <div class="image-overlay-text status-{latest_wuxuan_color}" style="position: absolute; top: 18.9%; left: 23.2%;">===========</div>
-            <div class="image-overlay-text lb status-{latest_laibing_color}">{latest_laibing_data}m{latest_laibing_desc}</div>
+            <div class="image-overlay-text status-{latest_laibing_color}" style="position: absolute; top: 12%; left: 9%; font-size:200%;">{latest_laibing_data}m</div>
+            <div class="image-overlay-text status-{latest_laibing_color}" style="position: absolute; top: 6%; left: 9%; font-size:150%;">{latest_laibing_change}m{latest_laibing_desc}</div>
             <div class="image-overlay-text status-{latest_laibing_color}" style="position: absolute; top: 18.9%; left: 4%;">===</div>
-            <div class="image-overlay-text lc status-{latest_luancheng_color}">{latest_luancheng_data}m{latest_luancheng_desc}</div>
+            <div class="image-overlay-text status-{latest_luancheng_color}" style="position: absolute; top: 57%; left: 13%; font-size:200%;">{latest_luancheng_data}m</div>
+            <div class="image-overlay-text status-{latest_luancheng_color}" style="position: absolute; top: 51%; left: 13%; font-size:150%;">{latest_luancheng_change}m{latest_luancheng_desc}</div>
             <div class="image-overlay-text status-{latest_luancheng_color}" style="position: absolute; top: 63.8%; left: 6%;">====</div>
-            <div class="image-overlay-text gg status-{latest_guigang_color}">{latest_guigang_data}m{latest_guigang_desc}</div>
+            <div class="image-overlay-text status-{latest_guigang_color}" style="position: absolute; top: 57%; left: 46%; font-size:200%;">{latest_guigang_data}m</div>
+            <div class="image-overlay-text status-{latest_guigang_color}" style="position: absolute; top: 51%; left: 46%; font-size:150%;">{latest_guigang_change}m{latest_guigang_desc}</div>
             <div class="image-overlay-text status-{latest_guigang_color}" style="position: absolute; top: 63.8%; left: 28.5%;">============</div>
             <div class="image-overlay-text" style="position: absolute; top: 42.4%; left: 92.2%;font-size:200%">{latest_wuzhou_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 42.4%; left: 66.9%;font-size:200%">{latest_jiangkou_wSymbol}</div>
