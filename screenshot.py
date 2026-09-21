@@ -253,14 +253,17 @@ def generate_html_report(data):
         latest_changzhou_fs = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('是否放水', '0')
         latest_changzhou_ckll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('出库流量', '0')
 
+    #上游变化和加权水库放水信息！
+    latest_upstream_change += latest_datengxia_fs*0.4+latest_guiping_fs*0.4+latest_changzhou_fs*0.6
+
     #计算预报值 如果变化幅度过小就上下略微波动 否则梧州预计变化值在上游最新总变化值0.35到0.65之间
     latest_wuzhou_data_float = float(latest_wuzhou_data)  # 转换为浮点数
     if latest_upstream_change <= 0.5 and latest_upstream_change >= -0.5:
-        latest_wuzhou_p1 = format(latest_wuzhou_data_float - latest_upstream_change*0.9, '.2f')
-        latest_wuzhou_p2 = format(latest_wuzhou_data_float + latest_upstream_change*0.9, '.2f')
+        latest_wuzhou_p1 = format(latest_wuzhou_data_float - latest_upstream_change*0.7, '.2f')
+        latest_wuzhou_p2 = format(latest_wuzhou_data_float + latest_upstream_change*0.7, '.2f')
     else:
-        latest_wuzhou_p1 = format(latest_wuzhou_data_float + latest_upstream_change*0.35, '.2f')
-        latest_wuzhou_p2 = format(latest_wuzhou_data_float + latest_upstream_change*0.65, '.2f')
+        latest_wuzhou_p1 = format(latest_wuzhou_data_float + latest_upstream_change*0.4, '.2f')
+        latest_wuzhou_p2 = format(latest_wuzhou_data_float + latest_upstream_change*0.7, '.2f')
 
     # 计算预报颜色样式 如果上游变化幅度过小或水位下降就用蓝色 否则用红色
     if latest_upstream_change <= 0.5:
