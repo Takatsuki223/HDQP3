@@ -66,7 +66,7 @@ python screenshot.py
 python -m PyInstaller screenshot.spec
 
 # 复制流域图、数据文件以及程序使用说明复制到dist文件夹内（必做！否则可视化报告会出错！）
-cp @("river.jpg", "water_level_data.json", "使用说明.txt") dist 
+cp @("river.jpg", "water_level_data.json", "使用说明(用前必看！).txt") dist 
 ```
 ## 项目架构
 
