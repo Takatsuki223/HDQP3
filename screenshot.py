@@ -253,6 +253,13 @@ def generate_html_report(data):
         latest_changzhou_fs = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('是否放水', '0')
         latest_changzhou_ckll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('出库流量', '0')
 
+    latest_upstream_change_value = ''
+    if latest_upstream_change >= 0:
+        latest_upstream_change_value += '上升'
+    else:
+        latest_upstream_change_value += '下降'
+    latest_upstream_change_value += str(format(abs(latest_upstream_change), '.2f'))
+    
     #上游变化和加权水库放水信息！
     latest_upstream_change += latest_datengxia_fs*0.4+latest_guiping_fs*0.4+latest_changzhou_fs*0.6
 
@@ -265,6 +272,12 @@ def generate_html_report(data):
         latest_wuzhou_p1 = format(latest_wuzhou_data_float + latest_upstream_change*0.4, '.2f')
         latest_wuzhou_p2 = format(latest_wuzhou_data_float + latest_upstream_change*0.7, '.2f')
 
+    lp3 = 0 #互换一下
+    if latest_wuzhou_p1 > latest_wuzhou_p2:
+        lp3 = latest_wuzhou_p2
+        latest_wuzhou_p2 = latest_wuzhou_p1
+        latest_wuzhou_p1 = lp3
+
     # 计算预报颜色样式 如果上游变化幅度过小或水位下降就用蓝色 否则用红色
     if latest_upstream_change <= 0.5:
         latest_wuzhou_pColor = 'blue'
@@ -274,7 +287,7 @@ def generate_html_report(data):
     #计算预报程度描述 如果上游变化幅度绝对值小于0.5为“变化不大”，绝对值在0.5和2直接为“略微”，绝对值在2和4直接为“明显”，绝对值大于4为“大幅”
     if abs(latest_upstream_change) < 0.5:
         latest_wuzhou_pDesc = '变化不大 '
-        latest_upstream_des = '微微'
+        latest_upstream_des = ''
     elif abs(latest_upstream_change) < 2:
         latest_wuzhou_pDesc = '略微'
         latest_upstream_des = '略微'
@@ -630,14 +643,14 @@ def generate_html_report(data):
         <div class="status-section">
             <div class="status-item">
                 <span class="status-label">上游整体情况：</span>
-                <span class="status-value status-{latest_upstream_color}">
-                    水位{latest_upstream_des}{latest_upstream_desc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="status-value status-{latest_upstream_color}" style="font-size:35px">
+                    水位{latest_upstream_des}{latest_upstream_desc} &nbsp;整体{latest_upstream_change_value}m &nbsp;&nbsp;
                 </span>
             </div>
             <div class="status-item">
                 <span class="status-label">今日梧州水位：</span>
                 <span class="status-value status-{latest_wuzhou_color}">
-                    {latest_wuzhou_data}m{latest_wuzhou_desc} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {latest_wuzhou_data}m{latest_wuzhou_desc} &nbsp;
                 </span>
                 <span class="status-label">较昨日变化：</span>
                 <span class="status-value status-{latest_wuzhou_color}">
@@ -1130,8 +1143,8 @@ def main():
             upstream_status = "下降▼"
             upstream_color = "blue"
         elif upstream_change_sum == 2:
-            upstream_status = "上升↗︎"
-            upstream_color = "red"
+            upstream_status = "较平稳"
+            upstream_color = "blue"
         elif upstream_change_sum == 3:
             upstream_status = "上升▲"
             upstream_color = "red"
