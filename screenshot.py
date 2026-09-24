@@ -290,7 +290,10 @@ def generate_html_report(data):
         latest_upstream_des = ''
     elif abs(latest_upstream_change) < 2:
         latest_wuzhou_pDesc = '略微'
-        latest_upstream_des = '略微'
+        if latest_upstream_desc == '较平稳':
+            latest_upstream_des = ''
+        else:
+            latest_upstream_des = '略微'
     elif abs(latest_upstream_change) < 4:
         latest_wuzhou_pDesc = '明显'
         latest_upstream_des = '明显'
@@ -648,9 +651,9 @@ def generate_html_report(data):
                 </span>
             </div>
             <div class="status-item">
-                <span class="status-label">今日梧州水位：</span>
+                <span class="status-label">今早八点梧州水位：</span>
                 <span class="status-value status-{latest_wuzhou_color}">
-                    {latest_wuzhou_data}m{latest_wuzhou_desc} &nbsp;
+                    {latest_wuzhou_data}m&nbsp;
                 </span>
                 <span class="status-label">较昨日变化：</span>
                 <span class="status-value status-{latest_wuzhou_color}">
