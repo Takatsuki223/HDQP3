@@ -487,7 +487,7 @@ def generate_html_report(data):
         s3 = 1
 
     if s3 != 0:
-        station_warning += '水位快速上涨（日涨幅已超2米）！请紧密关注水位变化！'
+        station_warning += '水位快速上涨（日涨幅已超2米）！请密切关注水位变化！'
 
     #梧州是否需要水位过低警告
     if float(latest_wuzhou_data) < 4:
@@ -587,7 +587,7 @@ def generate_html_report(data):
         latest_changzhou_color = 'red'
         r3 = 1
     if r3 != 0:
-        reservoir_warning += '水位超过正常蓄水位，可能进行泄洪放水！'
+        reservoir_warning += '水位达到或已超过正常蓄水位，可能进行泄洪放水！'
      #水库是否需要水位高警告符号
     r1 = 0
     if float(latest_datengxia_data) >= 60 and float(latest_datengxia_data) < 61:
