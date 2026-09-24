@@ -869,6 +869,13 @@ def parse_water_level_data(html_content, publish_date):
                     water_level = cells[2].get_text(strip=True)
                     change_value = cells[3].get_text(strip=True)
 
+                    # 如果变化值大于0且不以+开头，则添加+号
+                    try:
+                        if float(change_value) > 0 and not change_value.startswith('+'):
+                            change_value = '+' + change_value
+                    except (ValueError, TypeError):
+                        pass
+
                     # 将变化值转换为数字：1表示上升，0表示持平或下降
                     try:
                         change_num = float(change_value)
