@@ -243,14 +243,17 @@ def generate_html_report(data):
 
         latest_datengxia_data = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('上游水位', '0')
         latest_datengxia_fs = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('是否放水', '0')
+        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '0')
         latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '0')
 
         latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '0')
         latest_guiping_fs = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('是否放水', '0')
+        latest_guiping_rkll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('入库流量', '0')
         latest_guiping_ckll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('出库流量', '0')
 
         latest_changzhou_data = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('上游水位', '0')
         latest_changzhou_fs = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('是否放水', '0')
+        latest_changzhou_rkll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('入库流量', '0')
         latest_changzhou_ckll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('出库流量', '0')
 
     latest_upstream_change_value = ''
@@ -261,7 +264,7 @@ def generate_html_report(data):
     latest_upstream_change_value += str(format(abs(latest_upstream_change), '.2f'))
     
     #上游变化和加权水库放水信息！
-    latest_upstream_change += latest_datengxia_fs*0.4+latest_guiping_fs*0.4+latest_changzhou_fs*0.6
+    latest_upstream_change += float(latest_datengxia_fs)*0.4+float(latest_guiping_fs)*0.4+float(latest_changzhou_fs)*0.6
 
     #计算预报值 如果变化幅度过小就上下略微波动 否则梧州预计变化值在上游最新总变化值0.35到0.65之间
     latest_wuzhou_data_float = float(latest_wuzhou_data)  # 转换为浮点数
@@ -711,8 +714,14 @@ def generate_html_report(data):
             <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue">{latest_guiping_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 39%; left: 79%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex; height: 20%;color:blue">{latest_changzhou_wSymbol}</div>
             <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: -0.5%;left: 53.8%;font-size: 180%;">{latest_datengxia_data}m</div>
+            <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量；{latest_datengxia_rkll}m³</div>
+            <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 39%;left: 51%;font-size: 100%;">出库流量：{latest_datengxia_ckll}m³</div>
             <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">{latest_guiping_data}m</div>
+            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：{latest_guiping_rkll}m³</div>
+            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量：{latest_guiping_ckll}m³</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 3%;left: 79%;font-size: 180%;">{latest_changzhou_data}m</div>
+            <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 12%;left: 86.5%;font-size: 100%;">入库流量：{latest_changzhou_rkll}m³</div>
+            <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 18%;left: 86.5%;font-size: 100%;">出库流量：{latest_changzhou_ckll}m³</div>
             <img src="river.jpg" alt="西江流域图">
         </div>
         
