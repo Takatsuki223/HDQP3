@@ -559,7 +559,7 @@ def generate_html_report(data):
 
     #水库是否需要水位超过正常水位警告
     r3 = 0
-    if float(latest_datengxia_data) >= 61:
+    if float(latest_datengxia_data) > 61:
         latest_datengxia_wSymbol += '🚨'
         reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '大藤峡枢纽（已超'
@@ -567,7 +567,7 @@ def generate_html_report(data):
         resevoir_warning += '米）'
         latest_datengxia_color = 'red'
         r3 = 1
-    if float(latest_guiping_data) >= 43.1:
+    if float(latest_guiping_data) > 43.1:
         latest_guiping_wSymbol += '🚨'
         if r3 != 0:
             reservoir_warning += '、'
@@ -578,7 +578,7 @@ def generate_html_report(data):
         reservoir_warning += '米）'
         latest_guiping_color = 'red'
         r3 = 1
-    if float(latest_changzhou_data) >= 20.6:
+    if float(latest_changzhou_data) > 20.6:
         latest_changzhou_wSymbol += '🚨'
         if r3 != 0:
             reservoir_warning += '、'
@@ -590,7 +590,37 @@ def generate_html_report(data):
         latest_changzhou_color = 'red'
         r3 = 1
     if r3 != 0:
-        reservoir_warning += '水位达到或已超过正常蓄水位，可能进行泄洪放水！'
+        reservoir_warning += '水位已超过正常蓄水位，可能进行泄洪放水！'
+
+    #水库是否需要水位达到正常水位警告
+    r4 = 0
+    if float(latest_datengxia_data) == 61:
+        latest_datengxia_wSymbol += '⚠️'
+        reservoir_warning += '<br> &nbsp;'
+        reservoir_warning += '大藤峡枢纽'
+        latest_datengxia_color = 'orange'
+        r4 = 1
+    if float(latest_guiping_data) == 43.1:
+        latest_guiping_wSymbol += '⚠️'
+        if r4 != 0:
+            reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
+        reservoir_warning += '贵港枢纽'
+        latest_guiping_color = 'orange'
+        r4 = 1
+    if float(latest_changzhou_data) == 20.6:
+        latest_changzhou_wSymbol += '⚠️'
+        if r4 != 0:
+            reservoir_warning += '、'
+        else:
+            reservoir_warning += '<br> &nbsp;'
+        reservoir_warning += '长洲枢纽'
+        latest_changzhou_color = 'orange'
+        r4 = 1
+    if r4 != 0:
+        reservoir_warning += '水位已达到正常蓄水位，请关注放水信息！'
+    
      #水库是否需要水位高警告符号
     r1 = 0
     if float(latest_datengxia_data) >= 60 and float(latest_datengxia_data) < 61:
@@ -714,11 +744,11 @@ def generate_html_report(data):
             <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue">{latest_guiping_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 39%; left: 79%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex; height: 20%;color:blue">{latest_changzhou_wSymbol}</div>
             <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: -0.5%;left: 53.8%;font-size: 180%;">{latest_datengxia_data}m</div>
-            <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量；{latest_datengxia_rkll}m³</div>
+            <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量: {latest_datengxia_rkll}m³</div>
             <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 39%;left: 51%;font-size: 100%;">出库流量：{latest_datengxia_ckll}m³</div>
             <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">{latest_guiping_data}m</div>
             <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：{latest_guiping_rkll}m³</div>
-            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量：{latest_guiping_ckll}m³</div>
+            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量: {latest_guiping_ckll}m³</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 3%;left: 79%;font-size: 180%;">{latest_changzhou_data}m</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 12%;left: 86.5%;font-size: 100%;">入库流量：{latest_changzhou_rkll}m³</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 18%;left: 86.5%;font-size: 100%;">出库流量：{latest_changzhou_ckll}m³</div>
