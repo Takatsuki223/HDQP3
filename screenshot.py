@@ -195,6 +195,7 @@ def generate_html_report(data):
         <div class="chart-section">
             <div class="chart-container">
                 <canvas id="waterLevelChart"></canvas>
+                <div class="image-overlay-text " style="position: absolute; top: 50%; left: 50%; font-size:150%;opacity: 0.3;color: red;">如果当日部分站点数据缺失，请尝试在上午10点后再次运行程序，并查看最新生成的可视化报告！</div>
             </div>
         </div>
 """
@@ -236,15 +237,17 @@ def generate_html_report(data):
         latest_luancheng_data = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('水位', '0')
         latest_luancheng_change = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('变化值', '0')
 
+        print(sorted_data[-1])#测试输出
+
         latest_guigang_color = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('颜色', 'blue')
         latest_guigang_desc = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('情况', '-')
         latest_guigang_data = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('水位', '0')
         latest_guigang_change = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('变化值', '0')
 
-        latest_datengxia_data = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('上游水位', '0')
+        latest_datengxia_data = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('上游水位', '59.568')
         latest_datengxia_fs = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('是否放水', '0')
-        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '0')
-        latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '0')
+        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '1522')
+        latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '877')
 
         latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '0')
         latest_guiping_fs = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('是否放水', '0')
@@ -372,7 +375,7 @@ def generate_html_report(data):
         station_warning += '米）'
         s1 = 1
 
-    if float(latest_guigang_data) >= 44:
+    if float(latest_guigang_data) >= 44:  #不清楚具体超警戒线
         latest_guigang_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
@@ -405,7 +408,7 @@ def generate_html_report(data):
         station_warning += '米）'
         s1 = 1
 
-    if float(latest_laibing_data) >= 62:
+    if float(latest_laibing_data) >= 62:  #不清楚具体超警戒线   合山警戒线可给85米
         latest_laibing_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
@@ -1047,11 +1050,22 @@ def main():
     # 解析列表页HTML
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # 获取前6条新闻链接
+    # 获取所有新闻链接
     news_items = soup.select('.newsList li')
-    num_links = min(6, len(news_items))
 
-    print(f"找到 {len(news_items)} 条新闻，将处理前 {num_links} 条")
+    # 获取今天的日期字符串，格式如 "20261012"
+    today_str = datetime.now().strftime('%Y%m%d')
+
+    # 筛选标题中包含今天日期的链接
+    filtered_items = []
+    for item in news_items:
+        title_tag = item.select_one('.newsTitle')
+        if title_tag:
+            title_text = title_tag.get_text(strip=True)
+            if today_str in title_text:
+                filtered_items.append(item)
+
+    print(f"找到 {len(news_items)} 条新闻，筛选出包含今天日期({today_str})的 {len(filtered_items)} 条")
 
     # 使用字典存储所有数据，站名为键
     all_water_data = {}
@@ -1059,8 +1073,7 @@ def main():
     # 使用字典存储水库数据，枢纽名为键
     all_reservoir_data = {}
 
-    for i in range(num_links):
-        news_item = news_items[i]
+    for i, news_item in enumerate(filtered_items):
 
         # 获取链接标题和URL
         title_tag = news_item.select_one('.newsTitle')
