@@ -196,6 +196,7 @@ def generate_html_report(data):
             <div class="chart-container">
                 <canvas id="waterLevelChart"></canvas>
                 <div class="image-overlay-text " style="position: absolute; top: 50%; left: 50%; font-size:150%;opacity: 0.3;color: red;">如果当日部分站点数据缺失，请尝试在上午10点后再次运行程序，并查看最新生成的可视化报告！</div>
+                <div class="image-overlay-text " style="position: absolute; top: 7%; left: 48%; font-size:100%;opacity: 0.3;color: black;">单击站点名称↓，可选择是否显示其水位波动曲线</div>
             </div>
         </div>
 """
@@ -237,11 +238,10 @@ def generate_html_report(data):
         latest_luancheng_data = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('水位', '0')
         latest_luancheng_change = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('变化值', '0')
 
-        print(sorted_data[-1])#测试输出
 
         latest_guigang_color = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('颜色', 'blue')
         latest_guigang_desc = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('情况', '-')
-        latest_guigang_data = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('水位', '0')
+        latest_guigang_data = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('水位', '41.91')
         latest_guigang_change = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('变化值', '0')
 
         latest_datengxia_data = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('上游水位', '59.568')
@@ -249,10 +249,10 @@ def generate_html_report(data):
         latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '1522')
         latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '877')
 
-        latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '0')
+        latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '43')
         latest_guiping_fs = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('是否放水', '0')
-        latest_guiping_rkll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('入库流量', '0')
-        latest_guiping_ckll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('出库流量', '0')
+        latest_guiping_rkll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('入库流量', '560')
+        latest_guiping_ckll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('出库流量', '365')
 
         latest_changzhou_data = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('上游水位', '0')
         latest_changzhou_fs = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('是否放水', '0')
@@ -261,13 +261,13 @@ def generate_html_report(data):
 
     latest_upstream_change_value = ''
     if latest_upstream_change >= 0:
-        latest_upstream_change_value += '上升'
+        latest_upstream_change_value += '变化'
     else:
-        latest_upstream_change_value += '下降'
+        latest_upstream_change_value += '变化'
     latest_upstream_change_value += str(format(abs(latest_upstream_change), '.2f'))
     
     #上游变化和加权水库放水信息！
-    latest_upstream_change += float(latest_datengxia_fs)*0.4+float(latest_guiping_fs)*0.4+float(latest_changzhou_fs)*0.6
+    latest_upstream_change += float(latest_datengxia_fs)*0.3*float(latest_datengxia_ckll)/5000+float(latest_guiping_fs)*0.3*float(latest_guiping_ckll)/5000+float(latest_changzhou_fs)*0.5*float(latest_changzhou_ckll)/5000
 
     #计算预报值 如果变化幅度过小就上下略微波动 否则梧州预计变化值在上游最新总变化值0.35到0.65之间
     latest_wuzhou_data_float = float(latest_wuzhou_data)  # 转换为浮点数
@@ -375,7 +375,7 @@ def generate_html_report(data):
         station_warning += '米）'
         s1 = 1
 
-    if float(latest_guigang_data) >= 44:  #不清楚具体超警戒线
+    if float(latest_guigang_data) >= 44:  #不清楚具体超警戒线    横县警戒线54.2米    贵港坝下警戒线是41.2米
         latest_guigang_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
@@ -562,7 +562,7 @@ def generate_html_report(data):
 
     #水库是否需要水位超过正常水位警告
     r3 = 0
-    if float(latest_datengxia_data) > 61:
+    if float(latest_datengxia_data) > 61:          #大藤峡61正常蓄水位
         latest_datengxia_wSymbol += '🚨'
         reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '大藤峡枢纽（已超'
@@ -570,7 +570,7 @@ def generate_html_report(data):
         resevoir_warning += '米）'
         latest_datengxia_color = 'red'
         r3 = 1
-    if float(latest_guiping_data) > 43.1:
+    if float(latest_guiping_data) > 43.1:          #贵港43.1正常蓄水位    西津正常蓄水位取62米
         latest_guiping_wSymbol += '🚨'
         if r3 != 0:
             reservoir_warning += '、'
@@ -581,7 +581,7 @@ def generate_html_report(data):
         reservoir_warning += '米）'
         latest_guiping_color = 'red'
         r3 = 1
-    if float(latest_changzhou_data) > 20.6:
+    if float(latest_changzhou_data) > 20.6:          #长洲20.6正常蓄水位
         latest_changzhou_wSymbol += '🚨'
         if r3 != 0:
             reservoir_warning += '、'
@@ -917,6 +917,14 @@ def parse_water_level_data(html_content, publish_date):
                             change_value = '+' + change_value
                     except (ValueError, TypeError):
                         pass
+
+                    # 如果时间不以0开头，则添加0
+                    try:
+                        if  not observation_time.startswith('0'):
+                            observation_time = '0' + observation_time
+                    except (ValueError, TypeError):
+                        pass
+                    
 
                     # 将变化值转换为数字：1表示上升，0表示持平或下降
                     try:

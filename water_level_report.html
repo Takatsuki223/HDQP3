@@ -168,6 +168,7 @@
             <div class="chart-container">
                 <canvas id="waterLevelChart"></canvas>
                 <div class="image-overlay-text " style="position: absolute; top: 50%; left: 50%; font-size:150%;opacity: 0.3;color: red;">如果当日部分站点数据缺失，请尝试在上午10点后再次运行程序，并查看最新生成的可视化报告！</div>
+                <div class="image-overlay-text " style="position: absolute; top: 7%; left: 48%; font-size:100%;opacity: 0.3;color: black;">单击站点名称↓，可选择是否显示其水位波动曲线</div>
             </div>
         </div>
 
@@ -176,23 +177,23 @@
             <div class="status-item">
                 <span class="status-label">上游整体情况：</span>
                 <span class="status-value status-blue" style="font-size:35px">
-                    水位较平稳 &nbsp;整体下降0.19m &nbsp;&nbsp;
+                    水位下降▼ &nbsp;整体上升0.25m &nbsp;&nbsp;
                 </span>
             </div>
             <div class="status-item">
                 <span class="status-label">今早八点梧州水位：</span>
-                <span class="status-value status-red">
-                    2.66m&nbsp;
+                <span class="status-value status-blue">
+                    2.64m&nbsp;
                 </span>
                 <span class="status-label">较昨日变化：</span>
-                <span class="status-value status-red">
-                    +0.04m▲
+                <span class="status-value status-blue">
+                    -0.02m▼
                 </span>
             </div>
             <div class="status-item">
                 <span class="status-label">近2天梧州水位预报：</span>
                 <span class="status-value status-blue">
-                    2.37m~2.95m      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   预计水位变化不大 上下小幅波动    
+                    2.34m~2.94m      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   预计水位变化不大 上下小幅波动    
                 </span>
             </div>
         </div>
@@ -200,7 +201,7 @@
             <div class="status-item" style="min-width:1300px">
                 <span class="status-label">🚨水库预警：</span>
                 <span class="warningStatus-value status-red">
-                     <br> &nbsp;长洲枢纽出库流量更大，可能正在放水，对下游水位会有额外影响。<br> &nbsp;长洲枢纽(还差0.38米）接近正常蓄水位，请留意开闸放水信息！
+                     <br> &nbsp;长洲枢纽出库流量更大，可能正在放水，对下游水位会有额外影响。<br> &nbsp;贵港枢纽(还差0.10米）、长洲枢纽(还差0.47米）接近正常蓄水位，请留意开闸放水信息！
                 </span>
             </div>
             <div class="status-item" style="min-width:1300px">
@@ -212,22 +213,22 @@
         </div>
         
         <div class="image-section">
-            <div class="image-overlay-text status-red" style="position: absolute; top: 52%; left: 92.5%; font-size:200%;">2.66m</div>
-            <div class="image-overlay-text status-red" style="position: absolute; top: 62%; left: 92.5%; font-size:150%;">+0.04m▲</div>
-            <div class="image-overlay-text status-red" style="position: absolute;top: 41.25%;left: 86%;">====</div>
-            <div class="image-overlay-text status-red" style="position: absolute; top: 52%; left: 68%; font-size:200%;">20.40m</div>
-            <div class="image-overlay-text status-red" style="position: absolute; top: 62%; left: 68%; font-size:150%;">+0.01m▲</div>
-            <div class="image-overlay-text status-red" style="position: absolute; top: 41.4%; left: 63.85%;">==</div>
-            <div class="image-overlay-text status-blue" style="position: absolute; top: 12%; left: 39%; font-size:200%;">59.78m</div>
-            <div class="image-overlay-text status-blue" style="position: absolute; top: 6%; left: 39%; font-size:150%;">-0.05m▼</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 52%; left: 92.5%; font-size:200%;">2.64m</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 62%; left: 92.5%; font-size:150%;">-0.02m▼</div>
+            <div class="image-overlay-text status-blue" style="position: absolute;top: 41.25%;left: 86%;">====</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 52%; left: 68%; font-size:200%;">20.40m</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 62%; left: 68%; font-size:150%;">0.00m▼</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 41.4%; left: 63.85%;">==</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 12%; left: 39%; font-size:200%;">59.71m</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 6%; left: 39%; font-size:150%;">-0.07m▼</div>
             <div class="image-overlay-text status-blue" style="position: absolute; top: 18.9%; left: 23.2%;">===========</div>
-            <div class="image-overlay-text status-blue" style="position: absolute; top: 12%; left: 9%; font-size:200%;">59.67m</div>
-            <div class="image-overlay-text status-blue" style="position: absolute; top: 6%; left: 9%; font-size:150%;">-0.21m▼</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 12%; left: 9%; font-size:200%;">59.61m</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 6%; left: 9%; font-size:150%;">-0.06m▼</div>
             <div class="image-overlay-text status-blue" style="position: absolute; top: 18.9%; left: 4%;">===</div>
-            <div class="image-overlay-text status-red" style="position: absolute; top: 57%; left: 13%; font-size:200%;">61.579m</div>
-            <div class="image-overlay-text status-red" style="position: absolute; top: 51%; left: 13%; font-size:150%;">+0.062m▲</div>
+            <div class="image-overlay-text status-red" style="position: absolute; top: 57%; left: 13%; font-size:200%;">61.957m</div>
+            <div class="image-overlay-text status-red" style="position: absolute; top: 51%; left: 13%; font-size:150%;">+0.378m▲</div>
             <div class="image-overlay-text status-red" style="position: absolute; top: 63.8%; left: 6%;">====</div>
-            <div class="image-overlay-text status-blue" style="position: absolute; top: 57%; left: 46%; font-size:200%;">0m</div>
+            <div class="image-overlay-text status-blue" style="position: absolute; top: 57%; left: 46%; font-size:200%;">43.01m</div>
             <div class="image-overlay-text status-blue" style="position: absolute; top: 51%; left: 46%; font-size:150%;">0m-</div>
             <div class="image-overlay-text status-blue" style="position: absolute; top: 63.8%; left: 28.5%;">============</div>
             <div class="image-overlay-text" style="position: absolute; top: 42.4%; left: 92.2%;font-size:200%">⚠️</div>
@@ -237,16 +238,16 @@
             <div class="image-overlay-text" style="position: absolute; top: 65%; left: 12%;font-size:200%"> </div>
             <div class="image-overlay-text" style="position: absolute; top: 65%; left: 45%;font-size:200%"> </div>
             <div class="image-overlay-text" style="position: absolute;top: 17%;left: 53.75%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue"> 正常</div>
-            <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue"> 正常</div>
+            <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue"> ⚠️</div>
             <div class="image-overlay-text" style="position: absolute; top: 39%; left: 79%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex; height: 20%;color:blue"> 🌊⚠️</div>
             <div class="image-overlay-text status-blue" style="position: absolute;top: -0.5%;left: 53.8%;font-size: 180%;">59.568m</div>
             <div class="image-overlay-text status-blue" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量: 1522m³</div>
             <div class="image-overlay-text status-blue" style="position: absolute;top: 39%;left: 51%;font-size: 100%;">出库流量：877m³</div>
-            <div class="image-overlay-text status-blue" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">0m</div>
-            <div class="image-overlay-text status-blue" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：0m³</div>
-            <div class="image-overlay-text status-blue" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量: 0m³</div>
-            <div class="image-overlay-text status-orange" style="position: absolute;top: 3%;left: 79%;font-size: 180%;">20.22m</div>
-            <div class="image-overlay-text status-orange" style="position: absolute;top: 12%;left: 86.5%;font-size: 100%;">入库流量：1500m³</div>
+            <div class="image-overlay-text status-orange" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">43m</div>
+            <div class="image-overlay-text status-orange" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：560m³</div>
+            <div class="image-overlay-text status-orange" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量: 365m³</div>
+            <div class="image-overlay-text status-orange" style="position: absolute;top: 3%;left: 79%;font-size: 180%;">20.13m</div>
+            <div class="image-overlay-text status-orange" style="position: absolute;top: 12%;left: 86.5%;font-size: 100%;">入库流量：1800m³</div>
             <div class="image-overlay-text status-orange" style="position: absolute;top: 18%;left: 86.5%;font-size: 100%;">出库流量：1800m³</div>
             <img src="river.jpg" alt="西江流域图">
         </div>
@@ -667,13 +668,23 @@
                         <td>61.579 ▲ (+0.062)</td>
                     </tr>
 
+                    <tr>
+                        <td>2026-10-13 08:00</td>
+                        <td>2.64 ▼ (-0.02)</td>
+                        <td>20.40 ▼ (0.00)</td>
+                        <td>-   (-)</td>
+                        <td>59.71 ▼ (-0.07)</td>
+                        <td>59.61 ▼ (-0.06)</td>
+                        <td>61.957 ▲ (+0.378)</td>
+                    </tr>
+
                 </tbody>
             </table>
         </div>
 
         <div class="timestamp">
-            报告生成时间: 2026-10-12 14:14:11<br>
-            数据记录数: 40 条
+            报告生成时间: 2026-10-13 09:28:51<br>
+            数据记录数: 41 条
         </div>
     </div>
 
@@ -682,11 +693,11 @@
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["2026-09-28 8:00", "2026-09-29 8:00", "2026-09-30 08:00", "2026-10-01 08:00", "2026-10-02 08:00", "2026-10-03 8:00", "2026-10-04 08:00", "2026-10-05 08:00", "2026-10-06 08:00", "2026-10-07 08:00", "2026-10-08 8:00", "2026-10-09 8:00", "2026-10-10 08:00", "2026-10-12 8:00"],
+                labels: ["2026-09-29 8:00", "2026-09-30 08:00", "2026-10-01 08:00", "2026-10-02 08:00", "2026-10-03 8:00", "2026-10-04 08:00", "2026-10-05 08:00", "2026-10-06 08:00", "2026-10-07 08:00", "2026-10-08 8:00", "2026-10-09 8:00", "2026-10-10 08:00", "2026-10-12 8:00", "2026-10-13 08:00"],
                 datasets: [
                 {
                     label: '梧州',
-                    data: [2.99, 3.02, 2.97, 2.81, 3.04, 2.82, 2.86, 2.97, 2.83, 2.93, 2.97, 2.93, 2.86, 2.66],
+                    data: [3.02, 2.97, 2.81, 3.04, 2.82, 2.86, 2.97, 2.83, 2.93, 2.97, 2.93, 2.86, 2.66, 2.64],
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgb(255, 99, 132)',
                     tension: 0.1,
@@ -694,7 +705,7 @@
                 },
                 {
                     label: '濛江',
-                    data: [20.62, 20.52, 20.66, 20.73, 20.7, 20.69, 20.58, 20.59, 20.61, 20.62, 20.68, 20.59, 20.43, 20.4],
+                    data: [20.52, 20.66, 20.73, 20.7, 20.69, 20.58, 20.59, 20.61, 20.62, 20.68, 20.59, 20.43, 20.4, 20.4],
                     borderColor: 'rgb(54, 162, 235)',
                     backgroundColor: 'rgb(54, 162, 235)',
                     tension: 0.1,
@@ -702,7 +713,7 @@
                 },
                 {
                     label: '贵港',
-                    data: [43.016, 43.451, 43.144, 42.475, 42.905, 43.005, 43.121, 43.211, 43.246, 43.235, 43.521, 43.441, 43.471, 0.0],
+                    data: [43.451, 43.144, 42.475, 42.905, 43.005, 43.121, 43.211, 43.246, 43.235, 43.521, 43.441, 43.471, 0.0, 0.0],
                     borderColor: 'rgb(255, 205, 86)',
                     backgroundColor: 'rgb(255, 205, 86)',
                     tension: 0.1,
@@ -710,7 +721,7 @@
                 },
                 {
                     label: '武宣',
-                    data: [59.41, 59.46, 59.22, 58.96, 58.79, 58.91, 59.09, 59.26, 59.63, 59.71, 59.65, 59.65, 59.69, 59.78],
+                    data: [59.46, 59.22, 58.96, 58.79, 58.91, 59.09, 59.26, 59.63, 59.71, 59.65, 59.65, 59.69, 59.78, 59.71],
                     borderColor: 'rgb(75, 192, 192)',
                     backgroundColor: 'rgb(75, 192, 192)',
                     tension: 0.1,
@@ -718,7 +729,7 @@
                 },
                 {
                     label: '来宾',
-                    data: [59.5, 59.36, 59.14, 59.5, 58.7, 58.84, 59.2, 59.19, 59.62, 59.6, 59.54, 59.56, 59.56, 59.67],
+                    data: [59.36, 59.14, 59.5, 58.7, 58.84, 59.2, 59.19, 59.62, 59.6, 59.54, 59.56, 59.56, 59.67, 59.61],
                     borderColor: 'rgb(153, 102, 255)',
                     backgroundColor: 'rgb(153, 102, 255)',
                     tension: 0.1,
@@ -726,7 +737,7 @@
                 },
                 {
                     label: '峦城',
-                    data: [61.661, 61.621, 61.649, 61.804, 61.806, 61.718, 61.726, 61.938, 61.686, 61.723, 61.635, 61.549, 61.523, 61.579],
+                    data: [61.621, 61.649, 61.804, 61.806, 61.718, 61.726, 61.938, 61.686, 61.723, 61.635, 61.549, 61.523, 61.579, 61.957],
                     borderColor: 'rgb(255, 159, 64)',
                     backgroundColor: 'rgb(255, 159, 64)',
                     tension: 0.1,
