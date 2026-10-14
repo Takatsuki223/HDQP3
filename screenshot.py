@@ -239,17 +239,17 @@ def generate_html_report(data):
         latest_luancheng_change = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('变化值', '0')
 
 
-        latest_guigang_color = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('颜色', 'blue')
-        latest_guigang_desc = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('情况', '-')
-        latest_guigang_data = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('水位', '41.91')
-        latest_guigang_change = sorted_data[-1].get('站点数据',{}).get('贵港', {}).get('变化值', '0')
+        latest_guigang_color = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('颜色', 'blue')
+        latest_guigang_desc = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('情况', '▼')
+        latest_guigang_data = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('水位', '43.09')
+        latest_guigang_change = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('变化值', '-0.06')
 
         latest_datengxia_data = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('上游水位', '59.568')
         latest_datengxia_fs = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('是否放水', '0')
-        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '1522')
-        latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '877')
+        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '922')
+        latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '577')
 
-        latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '43')
+        latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '43.01')
         latest_guiping_fs = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('是否放水', '0')
         latest_guiping_rkll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('入库流量', '560')
         latest_guiping_ckll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('出库流量', '365')
@@ -375,13 +375,13 @@ def generate_html_report(data):
         station_warning += '米）'
         s1 = 1
 
-    if float(latest_guigang_data) >= 44:  #不清楚具体超警戒线    横县警戒线54.2米    贵港坝下警戒线是41.2米
+    if float(latest_guigang_data) >= 54:  #不清楚具体超警戒线    横县警戒线54.2米    贵港坝下警戒线是41.2米
         latest_guigang_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
         else:
             station_warning += '<br> &nbsp;'
-        station_warning += '贵港（已超警'
+        station_warning += '横县（已超警'
         station_warning += str(format(float(latest_guigang_data)-44), '.2f')
         station_warning += '米）'
         s1 = 1
@@ -489,7 +489,7 @@ def generate_html_report(data):
             station_warning += '、'
         else:
             station_warning += '<br> &nbsp;'
-        station_warning += '贵港'
+        station_warning += '横县'
         s3 = 1
 
     if s3 != 0:
@@ -766,7 +766,7 @@ def generate_html_report(data):
                         <th>时间</th>
                         <th>梧州</th>
                         <th>濛江</th>
-                        <th>贵港</th>
+                        <th>横县</th>
                         <th>武宣</th>
                         <th>来宾</th>
                         <th>峦城</th>
@@ -783,7 +783,7 @@ def generate_html_report(data):
                         <td>{record['时间']}</td>
                         <td>{station_data.get('梧州', {}).get('水位', '-')} {station_data.get('梧州', {}).get('情况', ' ')} ({station_data.get('梧州', {}).get('变化值', '-')})</td>
                         <td>{station_data.get('濛江', {}).get('水位', '-')} {station_data.get('濛江', {}).get('情况', ' ')} ({station_data.get('濛江', {}).get('变化值', '-')})</td>
-                        <td>{station_data.get('贵港', {}).get('水位', '-')} {station_data.get('贵港', {}).get('情况', ' ')} ({station_data.get('贵港', {}).get('变化值', '-')})</td>
+                        <td>{station_data.get('横县', {}).get('水位', '-')} {station_data.get('横县', {}).get('情况', ' ')} ({station_data.get('横县', {}).get('变化值', '-')})</td>
                         <td>{station_data.get('武宣', {}).get('水位', '-')} {station_data.get('武宣', {}).get('情况', ' ')} ({station_data.get('武宣', {}).get('变化值', '-')})</td>
                         <td>{station_data.get('来宾', {}).get('水位', '-')} {station_data.get('来宾', {}).get('情况', ' ')} ({station_data.get('来宾', {}).get('变化值', '-')})</td>
                         <td>{station_data.get('峦城', {}).get('水位', '-')} {station_data.get('峦城', {}).get('情况', ' ')} ({station_data.get('峦城', {}).get('变化值', '-')})</td>
@@ -793,7 +793,7 @@ def generate_html_report(data):
     # 准备图表数据 - 只显示最新的14条记录
     chart_data = sorted_data[-14:] if len(sorted_data) > 14 else sorted_data
     labels = [record['时间'] for record in chart_data]
-    stations = ['梧州', '濛江', '贵港', '武宣', '来宾', '峦城']
+    stations = ['梧州', '濛江', '横县', '武宣', '来宾', '峦城']
     colors = [
         'rgb(255, 99, 132)',
         'rgb(54, 162, 235)',
@@ -889,7 +889,7 @@ def parse_water_level_data(html_content, publish_date):
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # 目标站点
-    target_stations = ['梧州', '濛江', '贵港', '武宣', '来宾', '峦城']
+    target_stations = ['梧州', '濛江', '横县', '武宣', '来宾', '峦城']
 
     # 查找所有表格
     tables = soup.find_all('table')
@@ -1053,7 +1053,6 @@ def main():
         print(f"网站访问成功，状态码: {response.status_code}")
     except Exception as e:
         print(f"访问网站失败: {e}")
-        return
 
     # 解析列表页HTML
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -1195,8 +1194,8 @@ def main():
 
     # 添加或更新数据
     if new_data_time:
-        # 计算上游整体情况（来宾、武宣、贵港、峦城、濛江）
-        upstream_stations = ['来宾', '武宣', '贵港', '峦城', '濛江']
+        # 计算上游整体情况（来宾、武宣、横县、峦城、濛江）
+        upstream_stations = ['来宾', '武宣', '横县', '峦城', '濛江']
         upstream_change_sum = 0
         up_change_value_sum = 0
         for station in upstream_stations:
