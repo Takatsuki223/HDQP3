@@ -1063,6 +1063,8 @@ def main():
     # 获取今天的日期字符串，格式如 "20261012"
     today_str = datetime.now().strftime('%Y%m%d')
 
+    #today_str = "20261017"  # 测试用
+
     # 筛选标题中包含今天日期的链接
     filtered_items = []
     for item in news_items:
@@ -1127,6 +1129,36 @@ def main():
             publish_date = "未知日期"
 
         print(f"发布日期: {publish_date}")
+
+        # 如果是贵港的水情信息页面，页面内容是图片，下载并重命名
+        if '贵港' in link_title:
+            content_div = detail_soup.select_one('.content.html')
+            if content_div:
+                img_tag = content_div.find('img')
+                if img_tag:
+                    img_src = img_tag.get('src', '')
+                    if img_src:
+                        # 处理相对URL
+                        if img_src.startswith('/'):
+                            img_url = f"https://www.gxghj.cn{img_src}"
+                        elif not img_src.startswith('http'):
+                            img_url = f"https://www.gxghj.cn/{img_src}"
+                        else:
+                            img_url = img_src
+
+                        # 获取图片扩展名
+                        img_ext = os.path.splitext(img_src)[1] or '.png'
+
+                        # 修改文件名
+                        img_filename = f"guigang{img_ext}"
+
+                        try:
+                            img_response = requests.get(img_url, headers=headers, timeout=30)
+                            with open(img_filename, 'wb') as f:
+                                f.write(img_response.content)
+                            print(f"已下载贵港水情图片: {img_filename}")
+                        except Exception as e:
+                            print(f"下载贵港水情图片失败: {e}")
 
         # 解析水位数据
         water_data = parse_water_level_data(detail_response.text, publish_date)
