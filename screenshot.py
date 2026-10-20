@@ -5,6 +5,7 @@ import re
 import json
 from datetime import datetime
 import os
+import base64
 
 
 def load_data():
@@ -110,7 +111,7 @@ def generate_html_report(data):
         }}
         .status-label {{
             font-size: 20px;
-            color: #666;
+            color: #414141;
             font-weight: bold;
         }}
         .status-value {{
@@ -134,6 +135,15 @@ def generate_html_report(data):
         .status-orange {{
             color: #f3a533;
         }}
+        .cc {{
+            color: green;
+            font-size: 170%;
+            font-weight: bold;
+            line-height: 170%;
+        }}
+        .c-c {{
+            color: orange;
+        }}
         .image-section {{
             max-width: 90%;
             margin: 0px auto;
@@ -147,7 +157,7 @@ def generate_html_report(data):
             height: auto;
             display: block;
             border-radius: 10px;
-            margin: 0 auto;
+            margin: 0 auto 20px auto;
         }}
         .image-overlay-text {{
             transform: translateX(-50%);
@@ -213,50 +223,49 @@ def generate_html_report(data):
         latest_upstream_desc = sorted_data[-1].get('上游情况', {}).get('描述', '-')
         latest_upstream_change = sorted_data[-1].get('上游情况', {}).get('总变化和', '0')
 
-        latest_wuzhou_color = sorted_data[-1].get('站点数据',{}).get('梧州', {}).get('颜色', 'blue')
+        latest_wuzhou_color = sorted_data[-1].get('站点数据',{}).get('梧州', {}).get('颜色', 'black')
         latest_wuzhou_desc = sorted_data[-1].get('站点数据',{}).get('梧州', {}).get('情况', '-')
         latest_wuzhou_data = sorted_data[-1].get('站点数据',{}).get('梧州', {}).get('水位', '0')
         latest_wuzhou_change = sorted_data[-1].get('站点数据',{}).get('梧州', {}).get('变化值', '0')
 
-        latest_jiangkou_color = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('颜色', 'blue')
-        latest_jiangkou_desc = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('情况', '-')
-        latest_jiangkou_data = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('水位', '0')
-        latest_jiangkou_change = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('变化值', '0')
+        latest_mengjiang_color = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('颜色', 'black')
+        latest_mengjiang_desc = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('情况', '-')
+        latest_mengjiang_data = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('水位', '0')
+        latest_mengjiang_change = sorted_data[-1].get('站点数据',{}).get('濛江', {}).get('变化值', '0')
 
-        latest_wuxuan_color = sorted_data[-1].get('站点数据',{}).get('武宣', {}).get('颜色', 'blue')
+        latest_wuxuan_color = sorted_data[-1].get('站点数据',{}).get('武宣', {}).get('颜色', 'black')
         latest_wuxuan_desc = sorted_data[-1].get('站点数据',{}).get('武宣', {}).get('情况', '-')
         latest_wuxuan_data = sorted_data[-1].get('站点数据',{}).get('武宣', {}).get('水位', '0')
         latest_wuxuan_change = sorted_data[-1].get('站点数据',{}).get('武宣', {}).get('变化值', '0')
 
-        latest_laibing_color = sorted_data[-1].get('站点数据',{}).get('来宾', {}).get('颜色', 'blue')
+        latest_laibing_color = sorted_data[-1].get('站点数据',{}).get('来宾', {}).get('颜色', 'black')
         latest_laibing_desc = sorted_data[-1].get('站点数据',{}).get('来宾', {}).get('情况', '-')
         latest_laibing_data = sorted_data[-1].get('站点数据',{}).get('来宾', {}).get('水位', '0')
         latest_laibing_change = sorted_data[-1].get('站点数据',{}).get('来宾', {}).get('变化值', '0')
 
-        latest_luancheng_color = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('颜色', 'blue')
+        latest_luancheng_color = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('颜色', 'black')
         latest_luancheng_desc = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('情况', '-')
         latest_luancheng_data = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('水位', '0')
         latest_luancheng_change = sorted_data[-1].get('站点数据',{}).get('峦城', {}).get('变化值', '0')
 
-
-        latest_guigang_color = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('颜色', 'blue')
-        latest_guigang_desc = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('情况', '▼')
-        latest_guigang_data = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('水位', '43.09')
-        latest_guigang_change = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('变化值', '-0.06')
+        latest_hx_color = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('颜色', 'black')
+        latest_hx_desc = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('情况', '-')
+        latest_hx_data = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('水位', '0')
+        latest_hx_change = sorted_data[-1].get('站点数据',{}).get('横县', {}).get('变化值', '0')
 
         latest_datengxia_data = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('上游水位', '59.568')
         latest_datengxia_fs = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('是否放水', '0')
-        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '922')
+        latest_datengxia_rkll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('入库流量', '-')
         latest_datengxia_ckll = sorted_data[-1].get('枢纽数据',{}).get('大藤峡枢纽', {}).get('出库流量', '577')
 
-        latest_guiping_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '43.01')
-        latest_guiping_fs = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('是否放水', '0')
-        latest_guiping_rkll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('入库流量', '560')
-        latest_guiping_ckll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('出库流量', '365')
+        latest_gg_data = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('上游水位', '43.01')
+        latest_gg_fs = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('是否放水', '0')
+        latest_gg_rkll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('入库流量', '-')
+        latest_gg_ckll = sorted_data[-1].get('枢纽数据',{}).get('贵港枢纽', {}).get('出库流量', '365')
 
         latest_changzhou_data = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('上游水位', '0')
         latest_changzhou_fs = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('是否放水', '0')
-        latest_changzhou_rkll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('入库流量', '0')
+        latest_changzhou_rkll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('入库流量', '-')
         latest_changzhou_ckll = sorted_data[-1].get('枢纽数据',{}).get('长洲船闸', {}).get('出库流量', '0')
 
     latest_upstream_change_value = ''
@@ -267,7 +276,7 @@ def generate_html_report(data):
     latest_upstream_change_value += str(format(abs(latest_upstream_change), '.2f'))
     
     #上游变化和加权水库放水信息！
-    latest_upstream_change += float(latest_datengxia_fs)*0.3*float(latest_datengxia_ckll)/5000+float(latest_guiping_fs)*0.3*float(latest_guiping_ckll)/5000+float(latest_changzhou_fs)*0.5*float(latest_changzhou_ckll)/5000
+    latest_upstream_change += float(latest_datengxia_fs)*0.3*float(latest_datengxia_ckll)/5000+float(latest_gg_fs)*0.3*float(latest_gg_ckll)/5000+float(latest_changzhou_fs)*0.5*float(latest_changzhou_ckll)/5000
 
     #计算预报值 如果变化幅度过小就上下略微波动 否则梧州预计变化值在上游最新总变化值0.35到0.65之间
     latest_wuzhou_data_float = float(latest_wuzhou_data)  # 转换为浮点数
@@ -348,11 +357,11 @@ def generate_html_report(data):
 
     #站点是否需要警告符号
     latest_wuzhou_wSymbol = ' '
-    latest_jiangkou_wSymbol = ' '
+    latest_mengjiang_wSymbol = ' '
     latest_wuxuan_wSymbol = ' '
     latest_laibing_wSymbol = ' '
     latest_luancheng_wSymbol = ' '
-    latest_guigang_wSymbol = ' '
+    latest_hx_wSymbol = ' '
 
     #站点是否需要超警戒线警告
     s1 = 0
@@ -364,25 +373,25 @@ def generate_html_report(data):
         station_warning += '米）'
         s1 = 1
 
-    if float(latest_jiangkou_data) >= 25:
-        latest_jiangkou_wSymbol = '🚨'
+    if float(latest_mengjiang_data) >= 25:  #百度搜出来是25，藤县是23
+        latest_mengjiang_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
         else:
             station_warning += '<br> &nbsp;'
         station_warning += '濛江（已超警'
-        station_warning += str(format(float(latest_jiangkou_data)-31.7), '.2f')
+        station_warning += str(format(float(latest_mengjiang_data)-25), '.2f')
         station_warning += '米）'
         s1 = 1
 
-    if float(latest_guigang_data) >= 54:  #不清楚具体超警戒线    横县警戒线54.2米    贵港坝下警戒线是41.2米
-        latest_guigang_wSymbol = '🚨'
+    if float(latest_hx_data) >= 54:  #贵港坝上站不清楚具体超警戒线    横县警戒线54.2米    贵港坝下警戒线是41.2米
+        latest_hx_wSymbol = '🚨'
         if s1 != 0:
             station_warning += '、'
         else:
             station_warning += '<br> &nbsp;'
         station_warning += '横县（已超警'
-        station_warning += str(format(float(latest_guigang_data)-44), '.2f')
+        station_warning += str(format(float(latest_hx_data)-54), '.2f')
         station_warning += '米）'
         s1 = 1
 
@@ -420,7 +429,7 @@ def generate_html_report(data):
         s1 = 1
 
     if s1 != 0:
-        station_warning += '站点水位已超警！请紧密关注水位变化！'
+        station_warning += '站点水位已超警！请关注封航信息与水位未来变化！'
 
     s2 = 0
     if float(latest_wuzhou_data) >= 13 and float(latest_wuzhou_data) < 18.5:
@@ -428,16 +437,16 @@ def generate_html_report(data):
         station_warning += '<br> &nbsp;'
         station_warning += '梧州（水位已超过13米）'
 
-    if float(latest_jiangkou_data) >= 23.5 and float(latest_jiangkou_data) < 25:
-        latest_jiangkou_wSymbol = '⚠️'
+    if float(latest_mengjiang_data) >= 23.5 and float(latest_mengjiang_data) < 25:
+        latest_mengjiang_wSymbol = '⚠️'
         if s2 != 0:
             station_warning += '、'
         else:
             station_warning += '<br> &nbsp;'
-        station_warning += '濛江（水位已超过24米）'
+        station_warning += '濛江（水位已超过23米）'
 
     if s2 != 0:
-        station_warning += '水位较高，注意警戒！'
+        station_warning += '水位较高，注意留意封航通知！'
 
     #站点是否需要水位快速上涨警告
     s3 = 0
@@ -447,8 +456,8 @@ def generate_html_report(data):
         station_warning += '梧州'
         s3 = 1
 
-    if float(latest_jiangkou_change) > 2:
-        latest_jiangkou_wSymbol = '🚨'
+    if float(latest_mengjiang_change) > 2:
+        latest_mengjiang_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
         else:
@@ -483,8 +492,8 @@ def generate_html_report(data):
         station_warning += '峦城'
         s3 = 1
 
-    if float(latest_guigang_change) > 2:
-        latest_guigang_wSymbol = '🚨'
+    if float(latest_hx_change) > 2:
+        latest_hx_wSymbol = '🚨'
         if s3 != 0:
             station_warning += '、'
         else:
@@ -513,10 +522,10 @@ def generate_html_report(data):
     reservoir_warning = ' '
 
     latest_datengxia_wSymbol = ' '
-    latest_guiping_wSymbol = ' '
+    latest_gg_wSymbol = ' '
     latest_changzhou_wSymbol = ' '
     latest_datengxia_color = 'blue'
-    latest_guiping_color = 'blue'
+    latest_gg_color = 'blue'
     latest_changzhou_color = 'blue'
  
     #水库是否需要开闸预警
@@ -531,17 +540,17 @@ def generate_html_report(data):
             reservoir_warning += latest_datengxia_ckll
             reservoir_warning += 'm³/秒，较大)'
         r2 = 1
-    if float(latest_guiping_fs) == 1 or float(latest_guiping_ckll) >= 12000:
-        latest_guiping_color = 'orange'
-        latest_guiping_wSymbol += '🌊'
+    if float(latest_gg_fs) == 1 or float(latest_gg_ckll) >= 12000:
+        latest_gg_color = 'orange'
+        latest_gg_wSymbol += '🌊'
         if r2 != 0:
             reservoir_warning += '、'
         else:
             reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '贵港枢纽'
-        if float(latest_guiping_ckll) >= 12000:
+        if float(latest_gg_ckll) >= 12000:
             reservoir_warning += '(出库流量达'
-            reservoir_warning += latest_guiping_ckll
+            reservoir_warning += latest_gg_ckll
             reservoir_warning += 'm³/秒，较大)'
         r2 = 1
     if float(latest_changzhou_fs) == 1 or float(latest_changzhou_ckll) >= 15000:
@@ -570,16 +579,16 @@ def generate_html_report(data):
         resevoir_warning += '米）'
         latest_datengxia_color = 'red'
         r3 = 1
-    if float(latest_guiping_data) > 43.1:          #贵港43.1正常蓄水位    西津正常蓄水位取62米
-        latest_guiping_wSymbol += '🚨'
+    if float(latest_gg_data) > 43.1:          #贵港43.1正常蓄水位    西津正常蓄水位取62米
+        latest_gg_wSymbol += '🚨'
         if r3 != 0:
             reservoir_warning += '、'
         else:
             reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '贵港枢纽(已超'
-        reservoir_warning += str(format((float(latest_guiping_data)-43.1), '.2f'))
+        reservoir_warning += str(format((float(latest_gg_data)-43.1), '.2f'))
         reservoir_warning += '米）'
-        latest_guiping_color = 'red'
+        latest_gg_color = 'red'
         r3 = 1
     if float(latest_changzhou_data) > 20.6:          #长洲20.6正常蓄水位
         latest_changzhou_wSymbol += '🚨'
@@ -603,14 +612,14 @@ def generate_html_report(data):
         reservoir_warning += '大藤峡枢纽'
         latest_datengxia_color = 'orange'
         r4 = 1
-    if float(latest_guiping_data) == 43.1:
-        latest_guiping_wSymbol += '⚠️'
+    if float(latest_gg_data) == 43.1:
+        latest_gg_wSymbol += '⚠️'
         if r4 != 0:
             reservoir_warning += '、'
         else:
             reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '贵港枢纽'
-        latest_guiping_color = 'orange'
+        latest_gg_color = 'orange'
         r4 = 1
     if float(latest_changzhou_data) == 20.6:
         latest_changzhou_wSymbol += '⚠️'
@@ -634,16 +643,16 @@ def generate_html_report(data):
         reservoir_warning += '米）'
         latest_datengxia_color = 'orange'
         r1 = 1
-    if float(latest_guiping_data) >= 42 and float(latest_guiping_data) < 43.1:
-        latest_guiping_wSymbol += '⚠️'
+    if float(latest_gg_data) >= 42 and float(latest_gg_data) < 43.1:
+        latest_gg_wSymbol += '⚠️'
         if r1 != 0:
             reservoir_warning += '、'
         else:
             reservoir_warning += '<br> &nbsp;'
         reservoir_warning += '贵港枢纽(还差'
-        reservoir_warning += str(format(43.1-float(latest_guiping_data), '.2f'))
+        reservoir_warning += str(format(43.1-float(latest_gg_data), '.2f'))
         reservoir_warning += '米）'
-        latest_guiping_color = 'orange'
+        latest_gg_color = 'orange'
         r1 = 1
     if float(latest_changzhou_data) >= 19.6 and float(latest_changzhou_data) < 20.6:
         latest_changzhou_wSymbol += '⚠️'
@@ -662,8 +671,8 @@ def generate_html_report(data):
     if latest_datengxia_wSymbol == ' ':
         latest_datengxia_wSymbol += '正常'
 
-    if latest_guiping_wSymbol == ' ':
-        latest_guiping_wSymbol += '正常'
+    if latest_gg_wSymbol == ' ':
+        latest_gg_wSymbol += '正常'
 
     if latest_changzhou_wSymbol == ' ':
         latest_changzhou_wSymbol += '正常'
@@ -722,9 +731,9 @@ def generate_html_report(data):
             <div class="image-overlay-text status-{latest_wuzhou_color}" style="position: absolute; top: 52%; left: 92.5%; font-size:200%;">{latest_wuzhou_data}m</div>
             <div class="image-overlay-text status-{latest_wuzhou_color}" style="position: absolute; top: 62%; left: 92.5%; font-size:150%;">{latest_wuzhou_change}m{latest_wuzhou_desc}</div>
             <div class="image-overlay-text status-{latest_wuzhou_color}" style="position: absolute;top: 41.25%;left: 86%;">====</div>
-            <div class="image-overlay-text status-{latest_jiangkou_color}" style="position: absolute; top: 52%; left: 68%; font-size:200%;">{latest_jiangkou_data}m</div>
-            <div class="image-overlay-text status-{latest_jiangkou_color}" style="position: absolute; top: 62%; left: 68%; font-size:150%;">{latest_jiangkou_change}m{latest_jiangkou_desc}</div>
-            <div class="image-overlay-text status-{latest_jiangkou_color}" style="position: absolute; top: 41.4%; left: 63.85%;">==</div>
+            <div class="image-overlay-text status-{latest_mengjiang_color}" style="position: absolute; top: 52%; left: 68%; font-size:200%;">{latest_mengjiang_data}m</div>
+            <div class="image-overlay-text status-{latest_mengjiang_color}" style="position: absolute; top: 62%; left: 68%; font-size:150%;">{latest_mengjiang_change}m{latest_mengjiang_desc}</div>
+            <div class="image-overlay-text status-{latest_mengjiang_color}" style="position: absolute; top: 41.4%; left: 63.85%;">==</div>
             <div class="image-overlay-text status-{latest_wuxuan_color}" style="position: absolute; top: 12%; left: 39%; font-size:200%;">{latest_wuxuan_data}m</div>
             <div class="image-overlay-text status-{latest_wuxuan_color}" style="position: absolute; top: 6%; left: 39%; font-size:150%;">{latest_wuxuan_change}m{latest_wuxuan_desc}</div>
             <div class="image-overlay-text status-{latest_wuxuan_color}" style="position: absolute; top: 18.9%; left: 23.2%;">===========</div>
@@ -734,30 +743,35 @@ def generate_html_report(data):
             <div class="image-overlay-text status-{latest_luancheng_color}" style="position: absolute; top: 57%; left: 13%; font-size:200%;">{latest_luancheng_data}m</div>
             <div class="image-overlay-text status-{latest_luancheng_color}" style="position: absolute; top: 51%; left: 13%; font-size:150%;">{latest_luancheng_change}m{latest_luancheng_desc}</div>
             <div class="image-overlay-text status-{latest_luancheng_color}" style="position: absolute; top: 63.8%; left: 6%;">====</div>
-            <div class="image-overlay-text status-{latest_guigang_color}" style="position: absolute; top: 57%; left: 46%; font-size:200%;">{latest_guigang_data}m</div>
-            <div class="image-overlay-text status-{latest_guigang_color}" style="position: absolute; top: 51%; left: 46%; font-size:150%;">{latest_guigang_change}m{latest_guigang_desc}</div>
-            <div class="image-overlay-text status-{latest_guigang_color}" style="position: absolute; top: 63.8%; left: 28.5%;">============</div>
+            <div class="image-overlay-text status-{latest_hx_color}" style="position: absolute; top: 57%; left: 46%; font-size:200%;">{latest_hx_data}m</div>
+            <div class="image-overlay-text status-{latest_hx_color}" style="position: absolute; top: 51%; left: 46%; font-size:150%;">{latest_hx_change}m{latest_hx_desc}</div>
+            <div class="image-overlay-text status-{latest_hx_color}" style="position: absolute; top: 63.8%; left: 28.5%;">============</div>
             <div class="image-overlay-text" style="position: absolute; top: 42.4%; left: 92.2%;font-size:200%">{latest_wuzhou_wSymbol}</div>
-            <div class="image-overlay-text" style="position: absolute; top: 42.4%; left: 66.9%;font-size:200%">{latest_jiangkou_wSymbol}</div>
+            <div class="image-overlay-text" style="position: absolute; top: 42.4%; left: 66.9%;font-size:200%">{latest_mengjiang_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 20%; left: 37.9%;font-size:200%">{latest_wuxuan_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 20%; left: 8.6%;font-size:200%">{latest_laibing_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 65%; left: 12%;font-size:200%">{latest_luancheng_wSymbol}</div>
-            <div class="image-overlay-text" style="position: absolute; top: 65%; left: 45%;font-size:200%">{latest_guigang_wSymbol}</div>
+            <div class="image-overlay-text" style="position: absolute; top: 65%; left: 45%;font-size:200%">{latest_hx_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute;top: 17%;left: 53.75%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue">{latest_datengxia_wSymbol}</div>
-            <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue">{latest_guiping_wSymbol}</div>
+            <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue">{latest_gg_wSymbol}</div>
             <div class="image-overlay-text" style="position: absolute; top: 39%; left: 79%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex; height: 20%;color:blue">{latest_changzhou_wSymbol}</div>
             <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: -0.5%;left: 53.8%;font-size: 180%;">{latest_datengxia_data}m</div>
             <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量: {latest_datengxia_rkll}m³</div>
             <div class="image-overlay-text status-{latest_datengxia_color}" style="position: absolute;top: 39%;left: 51%;font-size: 100%;">出库流量：{latest_datengxia_ckll}m³</div>
-            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">{latest_guiping_data}m</div>
-            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：{latest_guiping_rkll}m³</div>
-            <div class="image-overlay-text status-{latest_guiping_color}" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量: {latest_guiping_ckll}m³</div>
+            <div class="image-overlay-text status-{latest_gg_color}" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">{latest_gg_data}m</div>
+            <div class="image-overlay-text status-{latest_gg_color}" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：{latest_gg_rkll}m³</div>
+            <div class="image-overlay-text status-{latest_gg_color}" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量: {latest_gg_ckll}m³</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 3%;left: 79%;font-size: 180%;">{latest_changzhou_data}m</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 12%;left: 86.5%;font-size: 100%;">入库流量：{latest_changzhou_rkll}m³</div>
             <div class="image-overlay-text status-{latest_changzhou_color}" style="position: absolute;top: 18%;left: 86.5%;font-size: 100%;">出库流量：{latest_changzhou_ckll}m³</div>
             <img src="river.jpg" alt="西江流域图">
         </div>
-        
+        <div class="cc">
+            <span style="color:#414141; font-size:120%"> 站点数据是否获取 </span> <span class="cc" style="font-size:75%">&nbsp;&nbsp;&nbsp;&nbsp;已获取到数据 </span><span class="c-c" style="font-size:75%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未获取到数据</span> <br>
+            <div style="display: flex; justify-content:space-between; align-items: center;">
+                <span class="c{latest_wuzhou_desc}c">&nbsp;&nbsp;⚫︎梧州</span><span class="c{latest_mengjiang_desc}c">⚫︎濛江</span><span class="c{latest_hx_desc}c">⚫︎横县</span><span class="c{latest_luancheng_desc}c">⚫︎峦城</span><span class="c{latest_wuxuan_desc}c">⚫︎武宣</span><span class="c{latest_laibing_desc}c">⚫︎来宾</span><span class="c{latest_changzhou_rkll}c">⚫︎长洲枢纽</span><span class="c{latest_datengxia_rkll}c">⚫︎大藤峡枢纽</span><span class="c{latest_gg_rkll}c">⚫︎贵港枢纽&nbsp;&nbsp;</span>
+            </div>
+        </div>
         <div class="table-section">
             <h2>历史数据总表</h2>
             <table>
@@ -967,6 +981,29 @@ def parse_water_level_data(html_content, publish_date):
     return results
 
 
+def ocr_image(img_filename):
+    """对图片进行OCR识别，返回识别结果"""
+    ocr_url = "https://open.bigmodel.cn/api/paas/v4/layout_parsing"
+
+    with open(img_filename, "rb") as f:
+        file_base64 = "data:image/png;base64," + base64.b64encode(f.read()).decode("utf-8")
+
+    payload = {
+        "model": "glm-ocr",
+        "file": file_base64,
+        "return_crop_images": False,
+        "need_layout_visualization": False
+    }
+    ocr_headers = {
+        "Authorization": "Bearer 86039bcf560d4f18b77f53e0e04e5166.GgAtkKiN9TUSAcpp",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(ocr_url, json=payload, headers=ocr_headers, timeout=60)
+    print(f"OCR识别结果:\n{response.text}")
+    return response.text
+
+
 def parse_reservoir_data(html_content, publish_date):
     """解析水库/船闸数据"""
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -1157,6 +1194,10 @@ def main():
                             with open(img_filename, 'wb') as f:
                                 f.write(img_response.content)
                             print(f"已下载贵港水情图片: {img_filename}")
+
+                            # 对下载的图片进行OCR识别
+                            print("正在进行OCR识别...")
+                            ocr_result = ocr_image(img_filename)
                         except Exception as e:
                             print(f"下载贵港水情图片失败: {e}")
 

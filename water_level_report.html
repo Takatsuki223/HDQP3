@@ -82,7 +82,7 @@
         }
         .status-label {
             font-size: 20px;
-            color: #666;
+            color: #414141;
             font-weight: bold;
         }
         .status-value {
@@ -106,6 +106,15 @@
         .status-orange {
             color: #f3a533;
         }
+        .cc {
+            color: green;
+            font-size: 170%;
+            font-weight: bold;
+            line-height: 170%;
+        }
+        .c-c {
+            color: orange;
+        }
         .image-section {
             max-width: 90%;
             margin: 0px auto;
@@ -119,7 +128,7 @@
             height: auto;
             display: block;
             border-radius: 10px;
-            margin: 0 auto;
+            margin: 0 auto 20px auto;
         }
         .image-overlay-text {
             transform: translateX(-50%);
@@ -241,17 +250,22 @@
             <div class="image-overlay-text" style="position: absolute; top: 59.9%;left: 56.1%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex;height: 20%;color:blue"> ⚠️</div>
             <div class="image-overlay-text" style="position: absolute; top: 39%; left: 79%;font-size: 180%;writing-mode: vertical-rl;text-orientation: mixed;justify-content: center;align-items: center;display: flex; height: 20%;color:blue"> 🌊⚠️</div>
             <div class="image-overlay-text status-blue" style="position: absolute;top: -0.5%;left: 53.8%;font-size: 180%;">59.568m</div>
-            <div class="image-overlay-text status-blue" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量: 922m³</div>
+            <div class="image-overlay-text status-blue" style="position: absolute;top: 19%;left: 62%;font-size: 100%;">入库流量: -m³</div>
             <div class="image-overlay-text status-blue" style="position: absolute;top: 39%;left: 51%;font-size: 100%;">出库流量：577m³</div>
             <div class="image-overlay-text status-orange" style="position: absolute;top: 88%;left: 56%;font-size: 180%;">43.01m</div>
-            <div class="image-overlay-text status-orange" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：560m³</div>
+            <div class="image-overlay-text status-orange" style="position: absolute;top: 80%;left: 66.5%;font-size: 100%;">入库流量：-m³</div>
             <div class="image-overlay-text status-orange" style="position: absolute;top: 85%;left: 66.5%;font-size: 100%;">出库流量: 365m³</div>
             <div class="image-overlay-text status-orange" style="position: absolute;top: 3%;left: 79%;font-size: 180%;">20.51m</div>
             <div class="image-overlay-text status-orange" style="position: absolute;top: 12%;left: 86.5%;font-size: 100%;">入库流量：1300m³</div>
             <div class="image-overlay-text status-orange" style="position: absolute;top: 18%;left: 86.5%;font-size: 100%;">出库流量：1300m³</div>
             <img src="river.jpg" alt="西江流域图">
         </div>
-        
+        <div class="cc">
+            <span style="color:#414141; font-size:120%"> 站点数据是否获取 </span> <span class="cc" style="font-size:75%">&nbsp;&nbsp;&nbsp;&nbsp;已获取到数据 </span><span class="c-c" style="font-size:75%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未获取到数据</span> <br>
+            <div style="display: flex; justify-content:space-between; align-items: center;">
+                <span class="c▼c">⚫︎梧州</span><span class="c▲c">⚫︎濛江</span><span class="c▼c">⚫︎横县</span><span class="c▼c">⚫︎峦城</span><span class="c▼c">⚫︎武宣</span><span class="c▼c">⚫︎来宾</span><span class="c1300c">⚫︎长洲枢纽</span><span class="c-c">⚫︎大藤峡枢纽</span><span class="c-c">⚫︎贵港枢纽</span>
+            </div>
+        </div>
         <div class="table-section">
             <h2>历史数据总表</h2>
             <table>
@@ -753,7 +767,7 @@
         </div>
 
         <div class="timestamp">
-            报告生成时间: 2026-10-20 10:08:12<br>
+            报告生成时间: 2026-10-20 16:15:32<br>
             数据记录数: 48 条
         </div>
     </div>
