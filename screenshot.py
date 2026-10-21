@@ -684,7 +684,37 @@ def generate_html_report(data):
         rwC = "red"
     else:
         reservoir_warning += '无预警信息'
-    
+
+    #各站点是否获取数据标识
+    wzS = '❎︎'
+    mjS = '❎︎'
+    wxS = '❎︎'
+    lbS = '❎︎'
+    hxS = '❎︎'
+    lcS = '❎︎'
+    czS = '❎︎'
+    ggS = '❎︎'
+    dtxS = '❎︎'
+
+    if latest_wuzhou_desc != '-':
+        wzS = '✅'
+    if latest_mengjiang_desc != '-':
+        mjS = '✅'
+    if latest_wuxuan_desc != '-':
+        wxS = '✅'
+    if latest_laibing_desc != '-':
+        lbS = '✅'
+    if latest_hx_desc != '-':
+        hxS = '✅'
+    if latest_luancheng_desc != '-':
+        lcS = '✅'
+    if latest_changzhou_rkll != '-':
+        czS = '✅'
+    if latest_gg_rkll != '-':
+        ggS = '✅'
+    if latest_datengxia_rkll != '-':
+        dtxS = '✅'
+
     # 添加状态显示区域
     html_content += f"""
         
@@ -769,7 +799,7 @@ def generate_html_report(data):
         <div class="cc">
             <span style="color:#414141; font-size:120%"> 站点数据是否获取 </span> <span class="cc" style="font-size:75%">&nbsp;&nbsp;&nbsp;&nbsp;已获取到数据 </span><span class="c-c" style="font-size:75%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;未获取到数据</span> <br>
             <div style="display: flex; justify-content:space-between; align-items: center;">
-                <span class="c{latest_wuzhou_desc}c">&nbsp;&nbsp;⚫︎梧州</span><span class="c{latest_mengjiang_desc}c">⚫︎濛江</span><span class="c{latest_hx_desc}c">⚫︎横县</span><span class="c{latest_luancheng_desc}c">⚫︎峦城</span><span class="c{latest_wuxuan_desc}c">⚫︎武宣</span><span class="c{latest_laibing_desc}c">⚫︎来宾</span><span class="c{latest_changzhou_rkll}c">⚫︎长洲枢纽</span><span class="c{latest_datengxia_rkll}c">⚫︎大藤峡枢纽</span><span class="c{latest_gg_rkll}c">⚫︎贵港枢纽&nbsp;&nbsp;</span>
+                <span class="c{latest_wuzhou_desc}c">&nbsp;&nbsp;{wzS}梧州</span><span class="c{latest_mengjiang_desc}c">{mjS}濛江</span><span class="c{latest_hx_desc}c">{hxS}横县</span><span class="c{latest_luancheng_desc}c">{lcS}峦城</span><span class="c{latest_wuxuan_desc}c">{wxS}武宣</span><span class="c{latest_laibing_desc}c">{lbS}来宾</span><span class="c{latest_changzhou_rkll}c">{czS}长洲枢纽</span><span class="c{latest_datengxia_rkll}c">{dtxS}大藤峡枢纽</span><span class="c{latest_gg_rkll}c">{ggS}贵港枢纽&nbsp;&nbsp;</span>
             </div>
         </div>
         <div class="table-section">
@@ -1000,8 +1030,63 @@ def ocr_image(img_filename):
     }
 
     response = requests.post(ocr_url, json=payload, headers=ocr_headers, timeout=60)
-    print(f"OCR识别结果:\n{response.text}")
+    print(f"OCR识别完成")
     return response.text
+
+
+def parse_ocr_reservoir_data(ocr_json_str, publish_date):
+    """从OCR识别结果中解析水库/枢纽数据"""
+    target_reservoirs = ['贵港枢纽', '大藤峡枢纽']
+    results = {}
+
+    try:
+        ocr_data = json.loads(ocr_json_str)
+    except json.JSONDecodeError:
+        print("OCR结果JSON解析失败")
+        return results
+
+    # layout_details 是一个列表的列表（按页）
+    layout_details = ocr_data.get('layout_details', [])
+    for page in layout_details:
+        for item in page:
+            content = item.get('content', '')
+            # 只处理包含通航建筑物流量信息表的表格内容
+            if '通航建筑物' in content and '<table' in content:
+                soup = BeautifulSoup(content, 'html.parser')
+                rows = soup.find_all('tr')
+                for row in rows[1:]:  # 跳过表头
+                    cells = row.find_all('td')
+                    if len(cells) >= 6:
+                        reservoir_name = cells[0].get_text(strip=True)
+                        if reservoir_name in target_reservoirs:
+                            observation_time = cells[1].get_text(strip=True)
+                            upstream_level = cells[2].get_text(strip=True)
+                            downstream_level = cells[3].get_text(strip=True)
+                            inflow = cells[4].get_text(strip=True)
+                            outflow = cells[5].get_text(strip=True)
+
+                            # 计算是否放水：出库流量 >= 入库流量则为1，否则为0
+                            try:
+                                inflow_float = float(inflow)
+                                outflow_float = float(outflow)
+                                is_releasing = 1 if outflow_float >= inflow_float else 0
+                            except (ValueError, TypeError):
+                                is_releasing = 0
+
+                            # 组合完整日期时间
+                            full_datetime = f"{publish_date} {observation_time}"
+
+                            results[reservoir_name] = {
+                                '站名': reservoir_name,
+                                '时间': full_datetime,
+                                '上游水位': upstream_level,
+                                '入库流量': inflow,
+                                '出库流量': outflow,
+                                '是否放水': is_releasing
+                            }
+                            print(f"OCR提取枢纽数据: {reservoir_name} 上游水位={upstream_level} 入库={inflow} 出库={outflow}")
+
+    return results
 
 
 def parse_reservoir_data(html_content, publish_date):
@@ -1198,6 +1283,10 @@ def main():
                             # 对下载的图片进行OCR识别
                             print("正在进行OCR识别...")
                             ocr_result = ocr_image(img_filename)
+
+                            # 从OCR结果中解析贵港枢纽和大藤峡枢纽数据
+                            ocr_reservoir_data = parse_ocr_reservoir_data(ocr_result, publish_date)
+                            all_reservoir_data.update(ocr_reservoir_data)
                         except Exception as e:
                             print(f"下载贵港水情图片失败: {e}")
 
